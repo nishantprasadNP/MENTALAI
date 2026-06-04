@@ -1,0 +1,110 @@
+[
+  {
+    "id": "guided_breathing",
+    "title": "Guided Breathing for Stress Relief",
+    "description": "A short breathing exercise to help reduce stress and anchor your attention in the present moment.",
+    "thumbnail": "https://img.youtube.com/vi/8pKjULHzs0s/hqdefault.jpg",
+    "youtubeUrl": "https://www.youtube.com/watch?v=8pKjULHzs0s",
+    "channelTitle": "Mental AI Wellness",
+    "categories": ["breathing", "mindfulness", "stress relief"],
+    "interests": ["mindfulness", "wellness", "health"],
+    "moodTags": ["stressed", "anxious", "angry"],
+    "tags": ["breathing", "grounding", "calm"]
+  },
+  {
+    "id": "guided_meditation",
+    "title": "Guided Meditation for Calm",
+    "description": "A calming meditation session designed especially for anxious moments and racing thoughts.",
+    "thumbnail": "https://img.youtube.com/vi/Q2M19gSrYEU/hqdefault.jpg",
+    "youtubeUrl": "https://www.youtube.com/watch?v=Q2M19gSrYEU",
+    "channelTitle": "Mental AI Wellness",
+    "categories": ["meditation", "guided meditation", "calm"],
+    "interests": ["mindfulness", "health", "self-care"],
+    "moodTags": ["anxious", "stressed", "anger"],
+    "tags": ["meditation", "calming", "focus"]
+  },
+  {
+    "id": "gratitude_reflection",
+    "title": "Guided Gratitude Reflection",
+    "description": "A gentle reflection practice that helps create a more grateful, hopeful mindset.",
+    "thumbnail": "https://img.youtube.com/vi/ZJvYDFS_nZc/hqdefault.jpg",
+    "youtubeUrl": "https://www.youtube.com/watch?v=ZJvYDFS_nZc",
+    "channelTitle": "Mental AI Wellness",
+    "categories": ["gratitude", "reflection", "wellness"],
+    "interests": ["journaling", "wellness", "gratitude"],
+    "moodTags": ["sad", "neutral", "happy"],
+    "tags": ["gratitude", "reflection", "self-care"]
+  },
+  {
+    "id": "calming_mindfulness",
+    "title": "Calming Mindfulness Practice",
+    "description": "A short mindfulness routine to soothe anger and invite inner calm.",
+    "thumbnail": "https://img.youtube.com/vi/8aGJ2JYKwNw/hqdefault.jpg",
+    "youtubeUrl": "https://www.youtube.com/watch?v=8aGJ2JYKwNw",
+    "channelTitle": "Mental AI Wellness",
+    "categories": ["mindfulness", "calming", "self-care"],
+    "interests": ["reflection", "journaling", "calm"],
+    "moodTags": ["angry", "stressed", "calm"],
+    "tags": ["mindfulness", "grounding", "calm"]
+  },
+  {
+    "id": "growth_reflection",
+    "title": "Growth and Reflection Session",
+    "description": "A short session to reflect on progress and focus on personal growth when you feel happy or inspired.",
+    "thumbnail": "https://img.youtube.com/vi/1ZYbU82GVz4/hqdefault.jpg",
+    "youtubeUrl": "https://www.youtube.com/watch?v=1ZYbU82GVz4",
+    "channelTitle": "Mental AI Wellness",
+    "categories": ["growth", "reflection", "wellness"],
+    "interests": ["creativity", "music", "self-care"],
+    "moodTags": ["happy", "calm", "neutral"],
+    "tags": ["growth", "reflection", "wellbeing"]
+  },
+  {
+    "id": "nature_calm",
+    "title": "Nature Soundscape for Calm",
+    "description": "Natural soundscapes to help ease anxiety and support a calm state of mind.",
+    "thumbnail": "https://img.youtube.com/vi/VJ7JgSa-6QQ/hqdefault.jpg",
+    "youtubeUrl": "https://www.youtube.com/watch?v=VJ7JgSa-6QQ",
+    "channelTitle": "Mental AI Wellness",
+    "categories": ["nature", "calming", "relaxation"],
+    "interests": ["nature", "rest", "wellness"],
+    "moodTags": ["stressed", "anxious", "calm"],
+    "tags": ["nature", "calm", "sleep"]
+  },
+  {
+    "id": "gratitude_journal_prompt",
+    "title": "Guided Gratitude Journal Practice",
+    "description": "A guided video to help you notice what you are grateful for and feel emotionally supported.",
+    "thumbnail": "https://img.youtube.com/vi/3m7MY5nXgo6/hqdefault.jpg",
+    "youtubeUrl": "https://www.youtube.com/watch?v=3m7MY5nXgo6",
+    "channelTitle": "Mental AI Wellness",
+    "categories": ["gratitude", "journaling", "self-care"],
+    "interests": ["journaling", "wellness", "gratitude"],
+    "moodTags": ["sad", "neutral", "happy"],
+    "tags": ["gratitude", "journaling", "reflection"]
+  },
+  {
+    "id": "breathing_reset",
+    "title": "Breathing Reset for Stress Relief",
+    "description": "A quick breathing reset video designed to reduce stress and refocus your energy.",
+    "thumbnail": "https://img.youtube.com/vi/h7fD8BO31U/hqdefault.jpg",
+    "youtubeUrl": "https://www.youtube.com/watch?v=h7fD8BO31U",
+    "channelTitle": "Mental AI Wellness",
+    "categories": ["breathing", "stress relief", "mindfulness"],
+    "interests": ["wellness", "health", "mindfulness"],
+    "moodTags": ["stressed", "anxious", "calm"],
+    "tags": ["breathing", "reset", "calm"]
+  },
+  {
+    "id": "self_compassion",
+    "title": "Self-Compassion Mindfulness Practice",
+    "description": "A calming mindfulness practice focused on self-compassion and emotional balance.",
+    "thumbnail": "https://img.youtube.com/vi/aAmfIX3TT40/hqdefault.jpg",
+    "youtubeUrl": "https://www.youtube.com/watch?v=aAmfIX3TT40",
+    "channelTitle": "Mental AI Wellness",
+    "categories": ["mindfulness", "calming", "self-care"],
+    "interests": ["mindfulness", "health", "wellness"],
+    "moodTags": ["angry", "stressed", "neutral"],
+    "tags": ["self-compassion", "mindfulness", "calm"]
+  }
+]
