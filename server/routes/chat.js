@@ -32,8 +32,12 @@ router.post("/", auth, async (req, res) => {
 
     const journalEntries = await loadRecentJournals(user._id, 12);
     const moodAnalytics = await getMoodAnalytics(user._id);
+    // Earlier turns of the current conversation are already saved in ChatHistory and are also
+    // sent by the client, so skip them here and keep only past conversations as memory.
+    const currentTurnCount = Math.max(0, messages.filter((m) => m.role === "user").length - 1);
     const chatHistoryRecords = await ChatHistory.find({ userId: user._id })
       .sort({ createdAt: -1 })
+      .skip(currentTurnCount)
       .limit(12)
       .lean();
     const recentChatHistory = chatHistoryRecords.reverse();
@@ -43,6 +47,7 @@ router.post("/", auth, async (req, res) => {
     const geminiContext = buildGeminiContext(user, journalEntries, recentChatHistory, moodAnalytics);
     const safeMessages = truncateMessages(messages, MESSAGE_CHAR_BUDGET, summaryData.summary);
     const lastUserMessage = safeMessages.filter((m) => m.role === "user").slice(-1)[0]?.content || "";
+    geminiContext.currentConversation = safeMessages.slice(0, -1);
 
     let reply = null;
 
@@ -57,13 +62,13 @@ router.post("/", auth, async (req, res) => {
       },
     });
 
-    // 1. Try rule-based engine first
+    // 1. Crisis messages always get the fixed helpline response
     const ruleMatch = matchRule(lastUserMessage);
-    if (ruleMatch) {
+    if (ruleMatch?.ruleId === "crisis") {
       reply = ruleMatch.response;
     }
 
-    // 2. If no rule matched, try Gemini
+    // 2. Otherwise use Gemini for a personalized, context-aware reply
     if (!reply && process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
       try {
         reply = await generateMentalAIResponse(lastUserMessage, geminiContext);
@@ -72,7 +77,12 @@ router.post("/", auth, async (req, res) => {
       }
     }
 
-    // 3. Fallback to generic supportive response
+    // 3. If Gemini is unavailable, fall back to rule-based responses
+    if (!reply && ruleMatch) {
+      reply = ruleMatch.response;
+    }
+
+    // 4. Fallback to generic supportive response
     if (!reply) {
       reply = getFallback();
     }

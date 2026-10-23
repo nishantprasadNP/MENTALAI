@@ -57,7 +57,7 @@ export default function Journal() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-calm">
       <Navbar />
       <main className="max-w-3xl mx-auto px-4 py-8">
         {/* Header */}
@@ -70,7 +70,7 @@ export default function Journal() {
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-4 py-2 bg-gray-900 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium rounded-lg transition-colors"
           >
             {showForm ? "Cancel" : "+ New Entry"}
           </button>
@@ -80,7 +80,7 @@ export default function Journal() {
         {showForm && (
           <form
             onSubmit={handleSubmit}
-            className="bg-white border border-gray-200 rounded-xl p-5 mb-6 space-y-4 shadow-sm"
+            className="bg-white border border-gray-200 rounded-2xl p-5 mb-6 space-y-4 shadow-sm"
           >
             <h2 className="font-semibold text-gray-900">New Entry</h2>
             {error && (
@@ -96,7 +96,7 @@ export default function Journal() {
                 onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
                 required
                 placeholder="What's on your mind?"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 transition-colors text-sm"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-colors text-sm"
               />
             </div>
             <div>
@@ -109,7 +109,7 @@ export default function Journal() {
                     onClick={() => setForm((p) => ({ ...p, mood: m.value }))}
                     className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-all ${
                       form.mood === m.value
-                        ? "bg-gray-900 text-white border-gray-900"
+                        ? "bg-brand-600 text-white border-brand-600"
                         : "bg-white border-gray-300 text-gray-600 hover:border-gray-500"
                     }`}
                   >
@@ -126,13 +126,13 @@ export default function Journal() {
                 required
                 rows={5}
                 placeholder="Write freely..."
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 transition-colors resize-none text-sm"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-colors resize-none text-sm"
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gray-900 hover:bg-gray-700 disabled:opacity-50 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm"
+              className="w-full bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm"
             >
               {loading ? "Saving..." : "Save Entry"}
             </button>
@@ -152,7 +152,7 @@ export default function Journal() {
               return (
                 <div
                   key={entry._id}
-                  className="bg-white border border-gray-200 rounded-xl p-5 group"
+                  className="bg-white border border-gray-200 rounded-2xl p-5 group"
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div>

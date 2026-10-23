@@ -109,7 +109,7 @@ export default function ZenTyping() {
   const progress = affirmation.length > 0 ? (typed.length / affirmation.length) * 100 : 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-calm">
       <Navbar />
       <main className="max-w-2xl mx-auto px-4 py-8">
         <Link
@@ -125,7 +125,7 @@ export default function ZenTyping() {
             Type each affirmation carefully — mindfully, not quickly
           </p>
           {isDaily && (
-            <span className="inline-block mt-2 bg-gray-900 text-white text-xs px-3 py-1 rounded-full font-medium">
+            <span className="inline-block mt-2 bg-brand-600 text-white text-xs px-3 py-1 rounded-full font-medium">
               ⚡ Daily Challenge — +30 bonus XP
             </span>
           )}
@@ -133,7 +133,7 @@ export default function ZenTyping() {
 
         {/* Achievement toast */}
         {newAchievement && (
-          <div className="mb-4 bg-white border border-gray-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
+          <div className="mb-4 bg-white border border-gray-200 rounded-2xl p-3 flex items-center gap-3 shadow-sm">
             <span className="text-2xl">{newAchievement.icon}</span>
             <div>
               <p className="text-xs text-gray-400">Achievement Unlocked!</p>
@@ -144,15 +144,15 @@ export default function ZenTyping() {
 
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-3 mb-6">
-          {/* <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          {/* <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
             <p className="text-2xl font-bold text-gray-900">{highScoreWpm}</p>
             <p className="text-xs text-gray-500">Best WPM</p>
           </div> */}
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
             <p className="text-2xl font-bold text-gray-900">{sessionStats.length}</p>
             <p className="text-xs text-gray-500">This session</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
             <p className="text-2xl font-bold text-gray-900">
               {sessionStats.reduce((a, s) => a + s.xp, 0)}
             </p>
@@ -161,13 +161,13 @@ export default function ZenTyping() {
         </div>
 
         {/* Main typing card */}
-        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-4">
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-4">
           {/* Affirmation display */}
           <div className="mb-5">
             <p className="text-xs text-gray-400 uppercase tracking-widest mb-3 font-medium">
               Type this affirmation
             </p>
-            <div className="text-xl leading-relaxed font-medium tracking-wide select-none p-4 bg-gray-50 rounded-xl">
+            <div className="text-xl leading-relaxed font-medium tracking-wide select-none p-4 bg-gray-50 rounded-2xl">
               {affirmation.split("").map((char, i) => (
                 <span key={i} className={`transition-colors duration-100 ${getCharClass(i)}`}>
                   {char}
@@ -180,7 +180,7 @@ export default function ZenTyping() {
           <div className="w-full bg-gray-100 rounded-full h-1.5 mb-4">
             <div
               className={`h-1.5 rounded-full transition-all duration-150 ${
-                status === "complete" ? "bg-green-500" : "bg-gray-900"
+                status === "complete" ? "bg-green-500" : "bg-brand-600"
               }`}
               style={{ width: `${progress}%` }}
             />
@@ -194,7 +194,7 @@ export default function ZenTyping() {
             disabled={status === "complete"}
             placeholder="Start typing..."
             rows={2}
-            className="w-full resize-none border border-gray-200 rounded-xl p-3 text-gray-900 text-base focus:outline-none focus:border-gray-400 transition-colors disabled:bg-gray-50 disabled:text-gray-400"
+            className="w-full resize-none border border-gray-200 rounded-2xl p-3 text-gray-900 text-base focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-colors disabled:bg-gray-50 disabled:text-gray-400"
             autoFocus
           />
 
@@ -213,7 +213,7 @@ export default function ZenTyping() {
 
         {/* Completion card */}
         {status === "complete" && (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 text-center mb-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 text-center mb-4">
             <p className="text-4xl mb-3">
               {accuracy === 100 ? "✨" : accuracy >= 90 ? "🎉" : "👍"}
             </p>
@@ -231,7 +231,7 @@ export default function ZenTyping() {
                 { label: "Accuracy", value: `${accuracy}%` },
                 { label: "XP Earned", value: `+${Math.round(accuracy / 5) + (isDaily && !dailyAwardedRef.current ? 30 : 0)}` },
               ].map((s) => (
-                <div key={s.label} className="p-3 bg-gray-50 rounded-xl">
+                <div key={s.label} className="p-3 bg-gray-50 rounded-2xl">
                   <p className="text-xl font-bold text-gray-900">{s.value}</p>
                   <p className="text-xs text-gray-500">{s.label}</p>
                 </div>
@@ -239,7 +239,7 @@ export default function ZenTyping() {
             </div>
             <button
               onClick={nextAffirmation}
-              className="bg-gray-900 text-white px-8 py-2.5 rounded-xl font-semibold hover:bg-gray-700 transition-colors"
+              className="bg-brand-600 text-white px-8 py-2.5 rounded-2xl font-semibold hover:bg-brand-700 transition-colors"
             >
               Next Affirmation
             </button>
@@ -248,7 +248,7 @@ export default function ZenTyping() {
 
         {/* Session history */}
         {sessionStats.length > 0 && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <div className="bg-white border border-gray-200 rounded-2xl p-5">
             <h3 className="font-semibold text-gray-900 mb-3">This Session</h3>
             <div className="space-y-2">
               {sessionStats.map((s, i) => (
@@ -270,7 +270,7 @@ export default function ZenTyping() {
 
         {/* Info */}
         {status === "idle" && sessionStats.length === 0 && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <div className="bg-white border border-gray-200 rounded-2xl p-5">
             <h3 className="font-semibold text-gray-900 mb-2">About Zen Typing</h3>
             <p className="text-sm text-gray-500 leading-relaxed">
               Mindfully typing positive affirmations combines the cognitive benefits of typing

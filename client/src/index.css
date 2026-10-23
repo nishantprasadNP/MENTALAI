@@ -2,16 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: "Inter", system-ui, sans-serif;
-  @apply bg-white text-gray-900;
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 font-sans antialiased;
+  }
+  h1,
+  h2 {
+    font-family: "Fraunces", Georgia, serif;
+    letter-spacing: -0.025em;
+  }
+  ::selection {
+    @apply bg-brand-200 text-brand-900;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-400 ring-offset-2 ring-offset-gray-50;
+  }
+}
+
+@layer components {
+  /* Soft background used on app pages */
+  .bg-calm {
+    background-color: theme("colors.gray.50");
+    background-image:
+      radial-gradient(60rem 30rem at 0% 0%, theme("colors.brand.50"), transparent 60%),
+      radial-gradient(50rem 30rem at 100% 0%, theme("colors.peach.100" / 60%), transparent 60%);
+    background-attachment: fixed;
+  }
+  .card {
+    @apply bg-white border border-gray-200/80 rounded-2xl shadow-soft;
+  }
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   @apply bg-gray-300 rounded-full;
@@ -23,4 +49,14 @@ body {
 }
 .cursor-blink {
   animation: blink 0.7s step-end infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

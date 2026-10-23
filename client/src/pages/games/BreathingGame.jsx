@@ -105,7 +105,7 @@ export default function BreathingGame() {
   const circleTransitionDuration = phase.duration * 1000;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-calm">
       <Navbar />
       <main className="max-w-2xl mx-auto px-4 py-8">
         <Link
@@ -121,7 +121,7 @@ export default function BreathingGame() {
             Box breathing — a technique used by the Navy SEALs to calm the mind
           </p>
           {isDaily && (
-            <span className="inline-block mt-2 bg-gray-900 text-white text-xs px-3 py-1 rounded-full font-medium">
+            <span className="inline-block mt-2 bg-brand-600 text-white text-xs px-3 py-1 rounded-full font-medium">
               ⚡ Daily Challenge — +30 bonus XP
             </span>
           )}
@@ -129,11 +129,11 @@ export default function BreathingGame() {
 
         {/* Session Stats */}
         <div className="grid grid-cols-3 gap-3 mb-8">
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
             <p className="text-2xl font-bold text-gray-900">{cycles}</p>
             <p className="text-xs text-gray-500 mt-0.5">Cycles</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
             <p
               className={`text-2xl font-bold transition-colors duration-300 ${
                 xpFlash ? "text-green-500" : "text-gray-900"
@@ -143,7 +143,7 @@ export default function BreathingGame() {
             </p>
             <p className="text-xs text-gray-500 mt-0.5">XP Earned</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
             <p className="text-2xl font-bold text-gray-900">
               {mins}:{String(secs).padStart(2, "0")}
             </p>
@@ -153,7 +153,7 @@ export default function BreathingGame() {
 
         {/* Achievement Toast */}
         {newAchievement && (
-          <div className="mb-4 bg-white border border-gray-200 rounded-xl p-3 flex items-center gap-3 shadow-sm animate-pulse">
+          <div className="mb-4 bg-white border border-gray-200 rounded-2xl p-3 flex items-center gap-3 shadow-sm animate-pulse">
             <span className="text-2xl">{newAchievement.icon}</span>
             <div>
               <p className="text-xs text-gray-400">Achievement Unlocked!</p>
@@ -182,7 +182,7 @@ export default function BreathingGame() {
             {/* Inner circle */}
             <div
               className={`absolute w-40 h-40 rounded-full transition-transform ${circleScale} ${
-                running ? "bg-gray-900 opacity-10" : "bg-gray-100"
+                running ? "bg-brand-600 opacity-10" : "bg-gray-100"
               }`}
               style={{ transitionDuration: `${running ? phase.duration * 900 : 300}ms` }}
             />
@@ -216,7 +216,7 @@ export default function BreathingGame() {
               <div key={p.id} className="flex flex-col items-center gap-1">
                 <div
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    i === phaseIdx ? "w-8 bg-gray-900" : "w-2 bg-gray-300"
+                    i === phaseIdx ? "w-8 bg-brand-600" : "w-2 bg-gray-300"
                   }`}
                 />
                 <span className="text-xs text-gray-400">{p.label}</span>
@@ -230,14 +230,14 @@ export default function BreathingGame() {
           {!running ? (
             <button
               onClick={start}
-              className="bg-gray-900 text-white px-10 py-3 rounded-xl font-semibold hover:bg-gray-700 transition-colors text-base"
+              className="bg-brand-600 text-white px-10 py-3 rounded-2xl font-semibold hover:bg-brand-700 transition-colors text-base"
             >
               Start Breathing
             </button>
           ) : (
             <button
               onClick={stop}
-              className="border border-gray-300 text-gray-700 px-10 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors text-base"
+              className="border border-gray-300 text-gray-700 px-10 py-3 rounded-2xl font-semibold hover:bg-gray-100 transition-colors text-base"
             >
               Stop
             </button>
@@ -245,7 +245,7 @@ export default function BreathingGame() {
         </div>
 
         {/* Info Card */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5">
+        <div className="bg-white border border-gray-200 rounded-2xl p-5">
           <h3 className="font-semibold text-gray-900 mb-4">How Box Breathing Works</h3>
           <div className="grid grid-cols-4 gap-3 text-center">
             {[

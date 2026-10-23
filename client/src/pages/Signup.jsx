@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import AuthLayout, { inputClass, primaryButtonClass } from "../components/AuthLayout";
 
 export default function Signup() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -31,81 +32,42 @@ export default function Signup() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <Link to="/" className="text-xl font-bold text-gray-900">
-            Mental AI
-          </Link>
-          <h1 className="text-2xl font-semibold text-gray-900 mt-4">Create account</h1>
-          <p className="text-gray-500 text-sm mt-1">Start your wellness journey</p>
-        </div>
-
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white border border-gray-200 rounded-xl p-6 space-y-4 shadow-sm"
-        >
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg">
-              {error}
-            </div>
-          )}
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              placeholder="Your name"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 transition-colors text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              placeholder="you@example.com"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 transition-colors text-sm"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              placeholder="Min. 6 characters"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 transition-colors text-sm"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gray-900 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-2.5 rounded-lg transition-colors mt-2 text-sm"
-          >
-            {loading ? "Creating account..." : "Create Account"}
-          </button>
-        </form>
-
-        <p className="text-center text-gray-500 text-sm mt-5">
+    <AuthLayout
+      title="Create your space"
+      subtitle="A calm, private place to check in with yourself."
+      footer={
+        <>
           Already have an account?{" "}
-          <Link to="/login" className="text-gray-900 font-medium hover:underline">
+          <Link to="/login" className="text-brand-700 font-semibold hover:underline">
             Sign in
           </Link>
-        </p>
-      </div>
-    </div>
+        </>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">{error}</div>
+        )}
+
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5">Full name</label>
+          <input id="name" type="text" name="name" value={form.name} onChange={handleChange} required autoComplete="name" placeholder="Your name" className={inputClass} />
+        </div>
+
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+          <input id="email" type="email" name="email" value={form.email} onChange={handleChange} required autoComplete="email" placeholder="you@example.com" className={inputClass} />
+        </div>
+
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+          <input id="password" type="password" name="password" value={form.password} onChange={handleChange} required autoComplete="new-password" placeholder="Min. 6 characters" className={inputClass} />
+        </div>
+
+        <button type="submit" disabled={loading} className={`${primaryButtonClass} mt-2`}>
+          {loading ? "Creating account..." : "Create account"}
+        </button>
+      </form>
+    </AuthLayout>
   );
 }

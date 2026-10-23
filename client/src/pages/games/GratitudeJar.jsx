@@ -95,7 +95,7 @@ export default function GratitudeJar() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-calm">
       <Navbar />
       <main className="max-w-2xl mx-auto px-4 py-8">
         <Link
@@ -111,7 +111,7 @@ export default function GratitudeJar() {
             Fill your jar daily — gratitude rewires your brain for positivity
           </p>
           {isDaily && (
-            <span className="inline-block mt-2 bg-gray-900 text-white text-xs px-3 py-1 rounded-full font-medium">
+            <span className="inline-block mt-2 bg-brand-600 text-white text-xs px-3 py-1 rounded-full font-medium">
               ⚡ Daily Challenge — +30 bonus XP
             </span>
           )}
@@ -119,7 +119,7 @@ export default function GratitudeJar() {
 
         {/* Achievement toast */}
         {newAchievement && (
-          <div className="mb-4 bg-white border border-gray-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
+          <div className="mb-4 bg-white border border-gray-200 rounded-2xl p-3 flex items-center gap-3 shadow-sm">
             <span className="text-2xl">{newAchievement.icon}</span>
             <div>
               <p className="text-xs text-gray-400">Achievement Unlocked!</p>
@@ -130,7 +130,7 @@ export default function GratitudeJar() {
 
         <div className="grid grid-cols-2 gap-4 mb-6">
           {/* Visual Jar */}
-          <div className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col items-center justify-center">
+          <div className="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col items-center justify-center">
             <div className="relative w-24 h-32 mb-3">
               {/* Jar outline */}
               <div className="absolute inset-0 border-2 border-gray-300 rounded-b-2xl rounded-t-lg" />
@@ -158,11 +158,11 @@ export default function GratitudeJar() {
 
           {/* Stats */}
           <div className="space-y-3">
-            <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
               <p className="text-2xl font-bold text-gray-900">{totalEntries}</p>
               <p className="text-xs text-gray-500">Total days</p>
             </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
               <p className="text-2xl font-bold text-gray-900">{Math.round(jarFill)}%</p>
               <p className="text-xs text-gray-500">Jar filled</p>
             </div>
@@ -171,7 +171,7 @@ export default function GratitudeJar() {
 
         {/* Today's entry */}
         {!hasEntryToday && status === "idle" ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
             <h2 className="font-semibold text-gray-900 mb-1">Today's Gratitude</h2>
             <p className="text-sm text-gray-500 mb-5">
               Answer the prompts below — write as much or as little as you like.
@@ -187,7 +187,7 @@ export default function GratitudeJar() {
                     value={inputs[i]}
                     onChange={(e) => handleInput(i, e.target.value)}
                     placeholder="I'm grateful for..."
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors"
+                    className="w-full border border-gray-200 rounded-2xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-colors"
                   />
                 </div>
               ))}
@@ -195,13 +195,13 @@ export default function GratitudeJar() {
             <button
               onClick={handleSubmit}
               disabled={inputs.every((v) => !v.trim())}
-              className="w-full mt-5 bg-gray-900 text-white py-3 rounded-xl font-semibold hover:bg-gray-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full mt-5 bg-brand-600 text-white py-3 rounded-2xl font-semibold hover:bg-brand-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Add to Jar +20 XP
             </button>
           </div>
         ) : status === "done" ? (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 text-center mb-6">
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 text-center mb-6">
             <p className="text-4xl mb-3">🌟</p>
             <h2 className="text-xl font-bold text-gray-900 mb-1">Added to your jar!</h2>
             <p className="text-gray-500 text-sm mb-3">
@@ -212,7 +212,7 @@ export default function GratitudeJar() {
             </p>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 text-center mb-6">
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 text-center mb-6">
             <p className="text-3xl mb-2">✅</p>
             <h2 className="font-semibold text-gray-900">Already done today!</h2>
             <p className="text-sm text-gray-500 mt-1">Come back tomorrow to fill your jar more.</p>
@@ -233,7 +233,7 @@ export default function GratitudeJar() {
 
         {/* Past entries */}
         {entries.length > 1 && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <div className="bg-white border border-gray-200 rounded-2xl p-5">
             <h3 className="font-semibold text-gray-900 mb-4">Past Entries</h3>
             <div className="space-y-3 max-h-64 overflow-y-auto">
               {entries.slice(1, 10).map((entry, i) => (
@@ -255,7 +255,7 @@ export default function GratitudeJar() {
         )}
 
         {/* Science note */}
-        <div className="mt-4 bg-white border border-gray-200 rounded-xl p-5">
+        <div className="mt-4 bg-white border border-gray-200 rounded-2xl p-5">
           <h3 className="font-semibold text-gray-900 mb-2">Why it works</h3>
           <p className="text-sm text-gray-500 leading-relaxed">
             Research shows that keeping a gratitude journal for just 3 weeks significantly

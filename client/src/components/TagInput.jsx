@@ -36,11 +36,11 @@ export default function TagInput({
           name="tagInput"
           type="text"
           placeholder={placeholder}
-          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 transition-colors text-sm"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-colors text-sm"
         />
         <button
           type="submit"
-          className="w-full sm:w-auto bg-gray-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition-colors"
+          className="w-full sm:w-auto bg-brand-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors"
         >
           Add
         </button>

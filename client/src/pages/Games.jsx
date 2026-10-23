@@ -102,7 +102,7 @@ export default function Games() {
   const dailyGame = GAMES.find((g) => g.id === dailyChallengeId);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-calm">
       <Navbar />
       <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
@@ -114,10 +114,10 @@ export default function Games() {
         </div>
 
       {/* player rpofile card */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-14 h-14 rounded-full bg-gray-900 flex items-center justify-center text-white text-xl font-bold select-none">
+              <div className="w-14 h-14 rounded-full bg-brand-600 flex items-center justify-center text-white text-xl font-bold select-none">
                 {levelInfo.level}
               </div>
               <div>
@@ -144,7 +144,7 @@ export default function Games() {
               </div> */}
               <div className="w-full bg-gray-100 rounded-full h-2.5">
                 <div
-                  className="bg-gray-900 h-2.5 rounded-full transition-all duration-700"
+                  className="bg-brand-600 h-2.5 rounded-full transition-all duration-700"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -165,10 +165,10 @@ export default function Games() {
         {/* Daily Challenge */}
         {dailyGame && (
           <div
-            className={`rounded-xl p-5 mb-6 border-2 ${
+            className={`rounded-2xl p-5 mb-6 border-2 ${
               isDailyChallengeComplete
                 ? "bg-gray-50 border-gray-200"
-                : "bg-white border-gray-900"
+                : "bg-white border-brand-600"
             }`}
           >
             <div className="flex items-center justify-between">
@@ -194,7 +194,7 @@ export default function Games() {
                 ) : (
                   <Link
                     to={`${dailyGame.path}?daily=true`}
-                    className="bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-gray-700 transition-colors inline-block"
+                    className="bg-brand-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-brand-700 transition-colors inline-block"
                   >
                     Play Now
                   </Link>
@@ -212,7 +212,7 @@ export default function Games() {
               onClick={() => setSelectedCategory(cat)}
               className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
                 selectedCategory === cat
-                  ? "bg-gray-900 text-white"
+                  ? "bg-brand-600 text-white"
                   : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-100"
               }`}
             >
@@ -232,10 +232,10 @@ export default function Games() {
               <Link
                 key={game.id}
                 to={isDaily ? `${game.path}?daily=true` : game.path}
-                className="bg-white border border-gray-200 hover:border-gray-400 rounded-xl p-5 transition-all group relative hover:shadow-sm"
+                className="bg-white border border-gray-200 hover:border-gray-400 rounded-2xl p-5 transition-all group relative hover:shadow-sm"
               >
                 {isDaily && (
-                  <span className="absolute top-3 right-3 bg-gray-900 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                  <span className="absolute top-3 right-3 bg-brand-600 text-white text-xs px-2 py-0.5 rounded-full font-medium">
                     Daily ⚡
                   </span>
                 )}
@@ -263,7 +263,7 @@ export default function Games() {
         </div>
 
         {/* Achievements */}
-        {/* <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+        {/* <div className="bg-white border border-gray-200 rounded-2xl p-5 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-gray-900 text-lg">Achievements</h2>
             <span className="text-sm text-gray-500">
@@ -304,19 +304,19 @@ export default function Games() {
 
         {/* Quick stats */}
         {/* <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
             <p className="text-2xl font-bold text-gray-900">{stats.breathingSessions || 0}</p>
             <p className="text-xs text-gray-500 mt-0.5">Breathing cycles</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
             <p className="text-2xl font-bold text-gray-900">{stats.highScores?.memory || 0}</p>
             <p className="text-xs text-gray-500 mt-0.5">Best memory score</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
             <p className="text-2xl font-bold text-gray-900">{stats.gratitudeCount || 0}</p>
             <p className="text-xs text-gray-500 mt-0.5">Gratitude entries</p>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
             <p className="text-2xl font-bold text-gray-900">{stats.highScores?.focus || 0}</p>
             <p className="text-xs text-gray-500 mt-0.5">Focus Tap best</p>
           </div>

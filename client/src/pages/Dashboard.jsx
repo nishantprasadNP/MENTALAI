@@ -44,99 +44,89 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-calm">
       <Navbar />
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 animate-fade-up">
         {/* Greeting */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Good {getGreeting()}, {user?.name?.split(" ")[0]}
-          </h1>
-          <p className="text-gray-500 mt-1">How are you feeling today?</p>
-        </div>
+        <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 text-white p-7 sm:p-9 mb-6 shadow-lift">
+          <div className="pointer-events-none absolute -top-16 -right-10 w-64 h-64 rounded-full bg-brand-300/30 blur-2xl" />
+          <div className="pointer-events-none absolute -bottom-20 right-32 w-56 h-56 rounded-full bg-peach-300/20 blur-2xl" />
+          <div className="relative">
+            <p className="text-brand-100 text-sm font-medium">{formatToday()}</p>
+            <h1 className="text-3xl sm:text-4xl font-semibold mt-1">
+              Good {getGreeting()}, {user?.name?.split(" ")[0]}
+            </h1>
+            <p className="text-brand-100 mt-2">How are you feeling today?</p>
+            <div className="flex flex-wrap gap-3 mt-6">
+              <Link to="/journal" className="px-5 py-2.5 bg-white text-brand-800 rounded-full text-sm font-semibold hover:bg-brand-50 transition-colors">
+                Check in
+              </Link>
+              <Link to="/chat" className="px-5 py-2.5 bg-white/15 hover:bg-white/25 border border-white/25 rounded-full text-sm font-semibold transition-colors">
+                Talk it out
+              </Link>
+            </div>
+            <blockquote className="mt-7 pt-5 border-t border-white/15 text-brand-50/90 text-sm italic leading-relaxed max-w-2xl">
+              “{quote}”
+            </blockquote>
+          </div>
+        </section>
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
           <StatCard
-            label="Day Streak"
+            label="Day streak"
             value={`${streak} day${streak !== 1 ? "s" : ""}`}
             sub="Keep it up!"
             icon="🔥"
+            tint="bg-peach-100"
           />
           <StatCard
-            label="Journal Entries"
+            label="Journal entries"
             value={journals.length}
-            sub="total entries"
+            sub="recent entries"
             icon="📓"
+            tint="bg-brand-100"
           />
           <StatCard
-            label="Latest Mood"
+            label="Latest mood"
             value={
               journals[0]
-                ? `${MOOD_EMOJI[journals[0].mood]} ${capitalize(journals[0].mood)}`
+                ? `${MOOD_EMOJI[journals[0].mood] || ""} ${capitalize(journals[0].mood)}`
                 : "—"
             }
             sub={journals[0] ? formatDate(journals[0].createdAt) : "No entries yet"}
             icon="💭"
+            tint="bg-lavender-100"
           />
         </div>
 
-        {/* Quote */}
-        <div className="border border-gray-200 rounded-xl p-5 mb-6 bg-white">
-          <p className="text-xs text-gray-400 uppercase tracking-widest mb-2">Daily quote</p>
-          <p className="text-gray-700 text-sm italic leading-relaxed">"{quote}"</p>
-        </div>
-
         {/* Quick actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-          <Link
-            to="/journal"
-            className="bg-white border border-gray-200 hover:border-gray-400 rounded-xl p-5 flex items-center gap-4 group transition-colors"
-          >
-            <span className="text-3xl">📓</span>
-            <div>
-              <p className="font-semibold text-gray-900">Write in Journal</p>
-              <p className="text-gray-500 text-sm">Log your thoughts and mood</p>
-            </div>
-          </Link>
-          <Link
-            to="/chat"
-            className="bg-white border border-gray-200 hover:border-gray-400 rounded-xl p-5 flex items-center gap-4 group transition-colors"
-          >
-            <span className="text-3xl">💬</span>
-            <div>
-              <p className="font-semibold text-gray-900">Chat with AI</p>
-              <p className="text-gray-500 text-sm">Talk to your wellness companion</p>
-            </div>
-          </Link>
-          <Link
-            to="/movies"
-            className="bg-white border border-gray-200 hover:border-gray-400 rounded-xl p-5 flex items-center gap-4 group transition-colors"
-          >
-            <span className="text-3xl">🎬</span>
-            <div>
-              <p className="font-semibold text-gray-900">Watch a movie</p>
-              <p className="text-gray-500 text-sm">Find something emotionally fitting</p>
-            </div>
-          </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <ActionCard to="/journal" icon="📓" tint="bg-peach-100" title="Write in journal" desc="Log your thoughts and mood" />
+          <ActionCard to="/chat" icon="💬" tint="bg-brand-100" title="Chat with Mental AI" desc="Talk to your wellness companion" />
+          <ActionCard to="/movies" icon="🎬" tint="bg-lavender-100" title="Watch a movie" desc="Find something that fits your mood" />
         </div>
 
         <PersonalizedRecommendations />
 
         {/* Recent moods */}
         {journals.length > 0 && (
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
-            <h2 className="font-semibold text-gray-900 mb-4">Recent Moods</h2>
-            <div className="space-y-3">
+          <div className="card p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent moods</h2>
+            <div className="divide-y divide-gray-100">
               {journals.map((j) => (
-                <div key={j._id} className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-2">
-                    <span>{MOOD_EMOJI[j.mood]}</span>
-                    <span className="text-gray-700">{j.title}</span>
+                <div key={j._id} className="flex items-center justify-between gap-4 py-3 text-sm">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <span className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-lg flex-shrink-0">
+                      {MOOD_EMOJI[j.mood]}
+                    </span>
+                    <span className="text-gray-800 font-medium truncate">{j.title}</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-gray-900 font-medium">{capitalize(j.mood)}</span>
-                    <span className="text-gray-400 text-xs">{formatDate(j.createdAt)}</span>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <span className="px-2.5 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold">
+                      {capitalize(j.mood)}
+                    </span>
+                    <span className="text-gray-400 text-xs w-12 text-right">{formatDate(j.createdAt)}</span>
                   </div>
                 </div>
               ))}
@@ -148,15 +138,34 @@ export default function Dashboard() {
   );
 }
 
-function StatCard({ label, value, sub, icon }) {
+function StatCard({ label, value, sub, icon, tint }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5">
-      <div className="text-2xl mb-2">{icon}</div>
-      <p className="text-gray-500 text-xs uppercase tracking-wide">{label}</p>
-      <p className="text-xl font-bold text-gray-900 mt-1">{value}</p>
-      <p className="text-gray-400 text-xs mt-0.5">{sub}</p>
+    <div className="card p-5 flex items-center gap-4">
+      <div className={`w-12 h-12 rounded-2xl ${tint} flex items-center justify-center text-2xl flex-shrink-0`}>{icon}</div>
+      <div className="min-w-0">
+        <p className="text-gray-500 text-xs font-medium">{label}</p>
+        <p className="text-xl font-semibold text-gray-900 truncate">{value}</p>
+        <p className="text-gray-400 text-xs">{sub}</p>
+      </div>
     </div>
   );
+}
+
+function ActionCard({ to, icon, tint, title, desc }) {
+  return (
+    <Link to={to} className="card p-5 flex items-center gap-4 group hover:-translate-y-0.5 hover:shadow-lift transition">
+      <span className={`w-12 h-12 rounded-2xl ${tint} flex items-center justify-center text-2xl flex-shrink-0`}>{icon}</span>
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-gray-900">{title}</p>
+        <p className="text-gray-500 text-sm">{desc}</p>
+      </div>
+      <span className="text-gray-300 group-hover:text-brand-600 group-hover:translate-x-0.5 transition" aria-hidden="true">→</span>
+    </Link>
+  );
+}
+
+function formatToday() {
+  return new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 }
 
 function getGreeting() {

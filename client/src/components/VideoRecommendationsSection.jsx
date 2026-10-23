@@ -123,13 +123,13 @@ export default function VideoRecommendationsSection() {
                           type="button"
                           onClick={() => handleWatch(video)}
                           className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold text-white transition ${
-                            watchedIds.has(String(video.id)) ? "bg-gray-400 cursor-default" : "bg-indigo-600 hover:bg-indigo-700"
+                            watchedIds.has(String(video.id)) ? "bg-gray-400 cursor-default" : "bg-brand-600 hover:bg-brand-700"
                           }`}
                           disabled={watchedIds.has(String(video.id))}
                         >
                           {watchedIds.has(String(video.id)) ? "Watched" : "Watch now"}
                         </button>
-                        <span className="text-xs text-gray-400">Score {video.score.toFixed(1)}</span>
+                        
                       </div>
                       <p className="text-xs text-gray-500 mt-3 line-clamp-3">{video.reason || video.explanation}</p>
             </div>

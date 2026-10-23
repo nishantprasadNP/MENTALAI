@@ -12,9 +12,9 @@ export default function OnboardingStepper({ step }) {
               <div
                 className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold ${
                   completed
-                    ? "border-gray-900 bg-gray-900 text-white"
+                    ? "border-brand-600 bg-brand-600 text-white"
                     : isActive
-                    ? "border-gray-900 bg-white text-gray-900"
+                    ? "border-brand-600 bg-white text-gray-900"
                     : "border-gray-200 bg-white text-gray-400"
                 }`}
               >
@@ -30,7 +30,7 @@ export default function OnboardingStepper({ step }) {
 
       <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
         <div
-          className="h-full rounded-full bg-gray-900 transition-all duration-300"
+          className="h-full rounded-full bg-brand-600 transition-all duration-300"
           style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
         />
       </div>

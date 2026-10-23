@@ -49,12 +49,12 @@ export default function PersonalizedRecommendations() {
     return () => (mounted = false);
   }, []);
 
-  if (loading) return <div className="bg-white border rounded-xl p-4">Loading recommendations…</div>;
-  if (!recs) return <div className="bg-white border rounded-xl p-4">No recommendations available.</div>;
+  if (loading) return <div className="card p-6 mb-8 text-sm text-gray-500 animate-pulse">Finding things for you…</div>;
+  if (!recs) return <div className="card p-6 mb-8 text-sm text-gray-500">No recommendations yet. Write a journal entry to get personalized picks.</div>;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
-      <h2 className="text-lg font-semibold mb-3">Personalized Recommendations</h2>
+    <div className="card p-6 mb-8">
+      <h2 className="text-xl font-semibold text-gray-900 mb-4">Picked for you</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <RecCardList title="Movies" items={recs.movies || []} summary={moviesSummary} onOpen={(id) => navigate(`/movies?recommended=${id}`)} />
         <RecCardList title="Wellness Videos" items={recs.videos || []} onOpen={(item) => openVideo(item)} />
@@ -108,25 +108,22 @@ export default function PersonalizedRecommendations() {
 function RecCardList({ title, items, onOpen, summary }) {
   if (!items || items.length === 0) return null;
   return (
-    <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
-      <h3 className="font-medium text-sm mb-2">{title}</h3>
-      {summary && <div className="text-xs text-gray-500 mb-2">{summary}</div>}
+    <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4">
+      <h3 className="font-semibold text-sm text-gray-900 mb-2">{title}</h3>
+      {summary && <div className="text-xs text-gray-500 mb-3 leading-relaxed">{summary}</div>}
       <div className="space-y-2">
         {items.map((it) => (
-          <div key={it.id} className="flex items-start justify-between gap-3 bg-white p-3 rounded-lg">
-            <div>
-              <div className="font-semibold text-sm">{it.title}</div>
+          <div key={it.id} className="flex items-center justify-between gap-3 bg-white border border-gray-100 p-3 rounded-xl hover:border-brand-200 transition-colors">
+            <div className="min-w-0">
+              <div className="font-medium text-sm text-gray-900">{it.title}</div>
               {!summary && it.explanation && <div className="text-xs text-gray-500 mt-1">{it.explanation}</div>}
-              <div className="text-xs text-gray-400 mt-1">Score: {it.score ?? "—"}</div>
             </div>
-            <div className="flex flex-col items-end">
-              <button
-                onClick={() => onOpen(it)}
-                className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
-              >
-                Open
-              </button>
-            </div>
+            <button
+              onClick={() => onOpen(it)}
+              className="flex-shrink-0 text-brand-700 bg-brand-50 hover:bg-brand-100 px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors"
+            >
+              Open
+            </button>
           </div>
         ))}
       </div>

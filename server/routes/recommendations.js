@@ -19,7 +19,7 @@ const router = express.Router();
 
 router.get("/", auth, getRecommendations);
 router.get("/public", getPublicRecommendations);
-router.get("/resolve", resolveExternal);
+router.get("/resolve", auth, resolveExternal);
 router.get("/history", auth, getRecommendationHistory);
 router.get("/movies", auth, getMovieRecommendations);
 router.post("/movies/click", auth, trackMovieClick);

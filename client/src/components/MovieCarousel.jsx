@@ -44,7 +44,7 @@ export default function MovieCarousel({ limit = 8 }) {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-6 text-center text-sm text-gray-500">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 text-center text-sm text-gray-500">
         Loading movie recommendations...
       </div>
     );
@@ -52,7 +52,7 @@ export default function MovieCarousel({ limit = 8 }) {
 
   if (!movies.length) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-6 text-center text-sm text-gray-500">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 text-center text-sm text-gray-500">
         No movie recommendations available yet. Try adding a journal entry or updating your preferences.
       </div>
     );
@@ -67,11 +67,14 @@ export default function MovieCarousel({ limit = 8 }) {
           {movies.map((movie) => (
             <div key={movie.id} className="snap-start w-56 shrink-0 rounded-3xl bg-white border border-gray-200 shadow-sm overflow-hidden">
               <div className="relative h-64 bg-slate-100">
-                <img
-                  src={movie.poster || "https://via.placeholder.com/400x225?text=No+Poster"}
-                  alt={movie.title}
-                  className="h-full w-full object-cover"
-                />
+                {movie.poster ? (
+                  <img src={movie.poster} alt={movie.title} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="h-full w-full bg-gradient-to-br from-brand-100 via-peach-100 to-lavender-200 flex flex-col items-center justify-center gap-3 p-4 text-center">
+                    <span className="text-4xl" aria-hidden="true">🎬</span>
+                    <span className="font-display text-lg font-semibold text-gray-800 leading-snug">{movie.title}</span>
+                  </div>
+                )}
               </div>
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
@@ -92,7 +95,7 @@ export default function MovieCarousel({ limit = 8 }) {
                   <button
                     type="button"
                     onClick={() => handleMovieClick(movie)}
-                    className="inline-flex items-center justify-center rounded-full bg-indigo-600 text-white px-4 py-2 text-sm font-medium hover:bg-indigo-700 transition"
+                    className="inline-flex items-center justify-center rounded-full bg-brand-600 text-white px-4 py-2 text-sm font-medium hover:bg-brand-700 transition"
                   >
                     Watch / View
                   </button>

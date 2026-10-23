@@ -150,14 +150,14 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-500">
+      <div className="min-h-screen bg-calm flex items-center justify-center text-gray-500">
         Loading profile...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-calm">
       <Navbar />
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8 rounded-3xl bg-white p-6 shadow-sm">
@@ -184,7 +184,7 @@ export default function Profile() {
                   value={form.age}
                   onChange={(e) => updateField("age", e.target.value)}
                   placeholder="Your age"
-                  className="mt-2 w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:border-gray-900 transition-colors text-sm"
+                  className="mt-2 w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-colors text-sm"
                 />
               </div>
               <div>
@@ -192,7 +192,7 @@ export default function Profile() {
                 <select
                   value={form.gender}
                   onChange={(e) => updateField("gender", e.target.value)}
-                  className="mt-2 w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:border-gray-900 transition-colors text-sm"
+                  className="mt-2 w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-colors text-sm"
                 >
                   <option value="">Prefer not to say</option>
                   <option value="Female">Female</option>
@@ -216,7 +216,7 @@ export default function Profile() {
                     onClick={() => toggleSelection("interests", option)}
                     className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
                       active
-                        ? "bg-gray-900 text-white border-gray-900"
+                        ? "bg-brand-600 text-white border-brand-600"
                         : "bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50"
                     }`}
                   >
@@ -242,7 +242,7 @@ export default function Profile() {
                         onClick={() => toggleSelection("favoriteGenres.movies", genre)}
                         className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
                           active
-                            ? "bg-gray-900 text-white border-gray-900"
+                            ? "bg-brand-600 text-white border-brand-600"
                             : "bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50"
                         }`}
                       >
@@ -264,7 +264,7 @@ export default function Profile() {
                         onClick={() => toggleSelection("favoriteGenres.music", genre)}
                         className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
                           active
-                            ? "bg-gray-900 text-white border-gray-900"
+                            ? "bg-brand-600 text-white border-brand-600"
                             : "bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50"
                         }`}
                       >
@@ -292,7 +292,7 @@ export default function Profile() {
                         onClick={() => toggleSelection("stressReliefPreferences", option)}
                         className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
                           active
-                            ? "bg-gray-900 text-white border-gray-900"
+                            ? "bg-brand-600 text-white border-brand-600"
                             : "bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50"
                         }`}
                       >
@@ -328,7 +328,7 @@ export default function Profile() {
               type="button"
               onClick={handleSave}
               disabled={saving}
-              className="inline-flex items-center justify-center rounded-full bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-gray-700 disabled:opacity-50"
+              className="inline-flex items-center justify-center rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-700 disabled:opacity-50"
             >
               {saving ? "Saving..." : "Save profile"}
             </button>

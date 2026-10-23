@@ -196,7 +196,7 @@ export default function Onboarding() {
                 onChange={(e) => updateField("age", e.target.value)}
                 min="1"
                 placeholder="Enter your age"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:border-gray-900 transition-colors text-sm"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-gray-900 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-100 transition-colors text-sm"
               />
               {errors.age && <p className="text-sm text-red-600">{errors.age}</p>}
             </div>
@@ -216,7 +216,7 @@ export default function Onboarding() {
                     onClick={() => updateField("gender", option)}
                     className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
                       form.gender === option
-                        ? "bg-gray-900 text-white border-gray-900"
+                        ? "bg-brand-600 text-white border-brand-600"
                         : "bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50"
                     }`}
                   >
@@ -243,7 +243,7 @@ export default function Onboarding() {
                       onClick={() => toggleSelection("interests", interest)}
                       className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
                         active
-                          ? "bg-gray-900 text-white border-gray-900"
+                          ? "bg-brand-600 text-white border-brand-600"
                           : "bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50"
                       }`}
                     >
@@ -278,7 +278,7 @@ export default function Onboarding() {
                       onClick={() => toggleSelection("favoriteGenres.movies", genre)}
                       className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
                         active
-                          ? "bg-gray-900 text-white border-gray-900"
+                          ? "bg-brand-600 text-white border-brand-600"
                           : "bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50"
                       }`}
                     >
@@ -301,7 +301,7 @@ export default function Onboarding() {
                       onClick={() => toggleSelection("favoriteGenres.music", genre)}
                       className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
                         active
-                          ? "bg-gray-900 text-white border-gray-900"
+                          ? "bg-brand-600 text-white border-brand-600"
                           : "bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50"
                       }`}
                     >
@@ -329,7 +329,7 @@ export default function Onboarding() {
                       onClick={() => toggleSelection("stressReliefPreferences", option)}
                       className={`rounded-2xl border px-4 py-2 text-sm transition-colors ${
                         active
-                          ? "bg-gray-900 text-white border-gray-900"
+                          ? "bg-brand-600 text-white border-brand-600"
                           : "bg-white text-gray-700 border-gray-200 hover:border-gray-400 hover:bg-gray-50"
                       }`}
                     >
@@ -396,7 +396,7 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-calm py-10 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <div className="mb-8 rounded-3xl bg-white p-6 shadow-sm">
           <p className="text-sm uppercase tracking-[0.24em] text-gray-500">Personalize your experience</p>
@@ -433,7 +433,7 @@ export default function Onboarding() {
               type="button"
               onClick={handleSubmit}
               disabled={loading}
-              className="inline-flex items-center justify-center rounded-full bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-gray-700 disabled:opacity-50"
+              className="inline-flex items-center justify-center rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700 disabled:opacity-50"
             >
               {loading ? "Saving..." : step < 5 ? "Next" : "Complete onboarding"}
             </button>

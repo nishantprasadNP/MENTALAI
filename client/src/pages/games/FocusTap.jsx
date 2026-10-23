@@ -107,7 +107,7 @@
     const gridPositions = Array.from({ length: GRID_SIZE }, (_, i) => i);
 
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-calm">
         <Navbar />
         <main className="max-w-2xl mx-auto px-4 py-8">
           <Link
@@ -123,7 +123,7 @@
               Watch the sequence light up, then tap the dots in the same order
             </p>
             {isDaily && (
-              <span className="inline-block mt-2 bg-gray-900 text-white text-xs px-3 py-1 rounded-full font-medium">
+              <span className="inline-block mt-2 bg-brand-600 text-white text-xs px-3 py-1 rounded-full font-medium">
                 ⚡ Daily Challenge — +30 bonus XP
               </span>
             )}
@@ -131,7 +131,7 @@
 
           {/* Achievement toast */}
           {newAchievement && (
-            <div className="mb-4 bg-white border border-gray-200 rounded-xl p-3 flex items-center gap-3 shadow-sm">
+            <div className="mb-4 bg-white border border-gray-200 rounded-2xl p-3 flex items-center gap-3 shadow-sm">
               <span className="text-2xl">{newAchievement.icon}</span>
               <div>
                 <p className="text-xs text-gray-400">Achievement Unlocked!</p>
@@ -142,22 +142,22 @@
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-3 mb-6">
-            <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
               <p className="text-2xl font-bold text-gray-900">{score}</p>
               <p className="text-xs text-gray-500">Round</p>
             </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
               <p className="text-2xl font-bold text-gray-900">{bestScore}</p>
               <p className="text-xs text-gray-500">Best</p>
             </div>
-            <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4 text-center">
               <p className="text-2xl font-bold text-gray-900">+{sessionXP}</p>
               <p className="text-xs text-gray-500">XP Earned</p>
             </div>
           </div>
 
           {/* Game Area */}
-          <div className="bg-white border border-gray-200 rounded-xl p-8 mb-4">
+          <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-4">
             {/* Status label */}
             <div className="text-center mb-6">
               {gameState === "idle" && (
@@ -217,7 +217,7 @@
                   <div
                     key={i}
                     className={`w-2 h-2 rounded-full transition-colors ${
-                      i < userInput.length ? "bg-gray-900" : "bg-gray-200"
+                      i < userInput.length ? "bg-brand-600" : "bg-gray-200"
                     }`}
                   />
                 ))}
@@ -230,7 +230,7 @@
             {(gameState === "idle" || gameState === "lose") && (
               <button
                 onClick={startGame}
-                className="bg-gray-900 text-white px-10 py-3 rounded-xl font-semibold hover:bg-gray-700 transition-colors"
+                className="bg-brand-600 text-white px-10 py-3 rounded-2xl font-semibold hover:bg-brand-700 transition-colors"
               >
                 {gameState === "lose" ? "Try Again" : "Start Game"}
               </button>
@@ -239,7 +239,7 @@
 
           {/* How to play */}
           {gameState === "idle" && (
-            <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <div className="bg-white border border-gray-200 rounded-2xl p-5">
               <h3 className="font-semibold text-gray-900 mb-2">How to Play</h3>
               <ul className="text-sm text-gray-500 space-y-1">
                 <li>• Dots will light up in a sequence — watch carefully</li>
@@ -253,7 +253,7 @@
 
           {/* High score message */}
           {gameState === "lose" && score > 0 && (
-            <div className="bg-white border border-gray-200 rounded-xl p-5 text-center">
+            <div className="bg-white border border-gray-200 rounded-2xl p-5 text-center">
               <p className="text-sm text-gray-500">
                 You remembered a sequence of{" "}
                 <span className="font-bold text-gray-900">{sequence.length} steps</span>.

@@ -1,8 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Logo from "./Logo";
 
 const navLinks = [
-  { to: "/dashboard", label: "Dashboard" },
+  { to: "/dashboard", label: "Home" },
   { to: "/journal", label: "Journal" },
   { to: "/chat", label: "Chat" },
   { to: "/movies", label: "Movies" },
@@ -14,6 +15,7 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const firstName = user?.name?.split(" ")[0] || "";
 
   function handleLogout() {
     logout();
@@ -21,38 +23,52 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
-      <Link to="/dashboard" className="text-lg font-bold text-gray-900 tracking-tight">
-        Mental AI
-      </Link>
+    <header className="sticky top-0 z-30 bg-gray-50/75 backdrop-blur-md border-b border-gray-200/70">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <Logo to="/dashboard" />
 
-      <div className="flex items-center gap-1">
-        {navLinks.map((link) => (
+        <nav className="hidden md:flex items-center gap-1 bg-white/70 border border-gray-200/80 rounded-full p-1 shadow-soft">
+          {navLinks.map((link) => (
+            <NavItem key={link.to} link={link} active={location.pathname.startsWith(link.to)} />
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-2">
           <Link
-            key={link.to}
-            to={link.to}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              location.pathname === link.to
-                ? "bg-gray-900 text-white"
-                : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
-            }`}
+            to="/profile"
+            title="Profile"
+            className="w-9 h-9 rounded-full bg-gradient-to-br from-peach-200 to-lavender-200 text-gray-800 font-semibold text-sm flex items-center justify-center ring-2 ring-white"
           >
-            {link.label}
+            {firstName.charAt(0).toUpperCase() || "?"}
           </Link>
-        ))}
+          <button
+            onClick={handleLogout}
+            className="text-sm px-3 py-2 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+          >
+            Log out
+          </button>
+        </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        <span className="text-sm text-gray-500 hidden sm:block">
-          Hi, <span className="text-gray-900 font-medium">{user?.name?.split(" ")[0]}</span>
-        </span>
-        <button
-          onClick={handleLogout}
-          className="text-sm px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
-        >
-          Logout
-        </button>
-      </div>
-    </nav>
+      {/* Mobile nav */}
+      <nav className="md:hidden flex gap-1 overflow-x-auto px-4 pb-3 -mt-1 [scrollbar-width:none]">
+        {navLinks.map((link) => (
+          <NavItem key={link.to} link={link} active={location.pathname.startsWith(link.to)} />
+        ))}
+      </nav>
+    </header>
+  );
+}
+
+function NavItem({ link, active }) {
+  return (
+    <Link
+      to={link.to}
+      className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+        active ? "bg-brand-600 text-white shadow-sm" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+      }`}
+    >
+      {link.label}
+    </Link>
   );
 }
