@@ -7,6 +7,7 @@ const navLinks = [
   { to: "/journal", label: "Journal" },
   { to: "/chat", label: "Chat" },
   { to: "/movies", label: "Movies" },
+  { to: "/music", label: "Music" },
   { to: "/games", label: "Games" },
   { to: "/profile", label: "Profile" },
 ];

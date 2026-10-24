@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import VideoRecommendationsSection from "../components/VideoRecommendationsSection";
-import PersonalizedRecommendations from "../components/PersonalizedRecommendations";
 import { useAuth } from "../context/AuthContext";
 
 const QUOTES = [
@@ -101,13 +100,12 @@ export default function Dashboard() {
         </div>
 
         {/* Quick actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
           <ActionCard to="/journal" icon="📓" tint="bg-peach-100" title="Write in journal" desc="Log your thoughts and mood" />
           <ActionCard to="/chat" icon="💬" tint="bg-brand-100" title="Chat with Mental AI" desc="Talk to your wellness companion" />
           <ActionCard to="/movies" icon="🎬" tint="bg-lavender-100" title="Watch a movie" desc="Find something that fits your mood" />
+          <ActionCard to="/music" icon="🎧" tint="bg-brand-50" title="Listen to music" desc="Songs picked for how you feel" />
         </div>
-
-        <PersonalizedRecommendations />
 
         {/* Recent moods */}
         {journals.length > 0 && (

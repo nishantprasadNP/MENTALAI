@@ -30,6 +30,15 @@ export default function Journal() {
 
   useEffect(() => { fetchEntries(); }, []);
 
+  // Opened from a Dashboard journal prompt (/journal?prompt=...): start a new entry with it
+  useEffect(() => {
+    const prompt = new URLSearchParams(window.location.search).get("prompt");
+    if (prompt) {
+      setForm((prev) => ({ ...prev, title: prompt.slice(0, 120) }));
+      setShowForm(true);
+    }
+  }, []);
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");

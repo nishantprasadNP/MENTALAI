@@ -20,7 +20,7 @@
     "channelTitle": "Mental AI Wellness",
     "categories": ["meditation", "guided meditation", "calm"],
     "interests": ["mindfulness", "health", "self-care"],
-    "moodTags": ["anxious", "stressed", "anger"],
+    "moodTags": ["anxious", "stressed", "angry"],
     "tags": ["meditation", "calming", "focus"]
   },
   {
@@ -104,7 +104,7 @@
     "channelTitle": "Mental AI Wellness",
     "categories": ["mindfulness", "calming", "self-care"],
     "interests": ["mindfulness", "health", "wellness"],
-    "moodTags": ["angry", "stressed", "neutral"],
+    "moodTags": ["angry", "stressed", "neutral", "sad"],
     "tags": ["self-compassion", "mindfulness", "calm"]
   }
 ]

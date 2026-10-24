@@ -59,7 +59,7 @@ client/src/
   App.jsx                 routes + auth guards (protected / guest / onboarding-only)
   context/AuthContext.jsx JWT stored in localStorage, set as axios Authorization header
   pages/                  Landing, Login, Signup, Onboarding, Dashboard, Journal, Chat,
-                          Movies, Games, Profile
+                          Movies, Music, Games, Profile
   pages/games/            BreathingGame, MemoryGame, ZenTyping, GratitudeJar, FocusTap
   components/             Navbar, MovieCarousel, RecommendationSummary, VideoRecommendationsSection, ...
 
@@ -71,6 +71,7 @@ server/
                           RecommendationHistory, VideoWatch
   services/geminiService.js  Gemini client, system prompt, model fallback
   services/watchmodeService.js  Watchmode movies + streaming sources, cached in MongoDB
+  services/musicService.js  mood-based songs from the iTunes Search API (no key needed)
   utils/
     RecommendationService.js        main scoring engine
     movieRecommendationService.js   mood-based movie recommendations (Watchmode + local)
@@ -108,6 +109,7 @@ Everything is under `/api`. All routes except signup, login and `/recommendation
 | POST | `/recommendations/movies/click` | Track a movie click |
 | GET | `/recommendations/videos` | Wellness video recommendations |
 | POST | `/recommendations/videos/watched` | Track a watched video |
+| GET | `/recommendations/music` | Mood-based songs from Apple Music (mood from the latest journal entry, or the latest chat) |
 | GET | `/recommendations/resolve?q=` | Resolve a title to a YouTube URL |
 
 ## How it works

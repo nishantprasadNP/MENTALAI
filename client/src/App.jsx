@@ -8,6 +8,7 @@ import Journal from "./pages/Journal";
 import Chat from "./pages/Chat";
 import Games from "./pages/Games";
 import Movies from "./pages/Movies";
+import Music from "./pages/Music";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import BreathingGame from "./pages/games/BreathingGame";
@@ -50,6 +51,7 @@ function AppRoutes() {
       <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
       <Route path="/games" element={<ProtectedRoute><Games /></ProtectedRoute>} />
       <Route path="/movies" element={<ProtectedRoute><Movies /></ProtectedRoute>} />
+      <Route path="/music" element={<ProtectedRoute><Music /></ProtectedRoute>} />
       <Route path="/games/breathing" element={<ProtectedRoute><BreathingGame /></ProtectedRoute>} />
       <Route path="/games/memory" element={<ProtectedRoute><MemoryGame /></ProtectedRoute>} />
       <Route path="/games/typing" element={<ProtectedRoute><ZenTyping /></ProtectedRoute>} />

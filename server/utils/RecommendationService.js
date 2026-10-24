@@ -6,6 +6,7 @@ const ChatHistory = require("../models/ChatHistory");
 const RecommendationHistory = require("../models/RecommendationHistory");
 const { getMoodAnalytics } = require("./moodAnalytics");
 const { recommendVideos } = require("./videoRecommendationService");
+const { getPersonalJournalPrompts } = require("../services/journalPromptService");
 
 const CANDIDATES = {
   games: [
@@ -90,6 +91,70 @@ const CANDIDATES = {
       categories: ["relaxation", "self-care"],
       moodTags: ["stressed", "anxious", "calm"],
       interests: ["Movement", "Health", "Mindfulness"],
+    },
+    {
+      id: "share_good_news",
+      title: "Share your good mood with a friend",
+      type: "activity",
+      categories: ["connection", "gratitude"],
+      moodTags: ["happy"],
+      interests: ["Friends", "Social", "Wellness"],
+    },
+    {
+      id: "dance_break",
+      title: "Dance to an upbeat song",
+      type: "activity",
+      categories: ["movement", "creativity"],
+      moodTags: ["happy", "neutral"],
+      interests: ["Music", "Movement", "Feel-good"],
+    },
+    {
+      id: "plan_something_fun",
+      title: "Plan something to look forward to",
+      type: "activity",
+      categories: ["growth", "creativity"],
+      moodTags: ["happy", "calm"],
+      interests: ["Productivity", "Creativity", "Travel"],
+    },
+    {
+      id: "reach_out",
+      title: "Reach out to someone you trust",
+      type: "activity",
+      categories: ["support", "connection"],
+      moodTags: ["sad", "anxious"],
+      interests: ["Friends", "Family", "Wellness"],
+    },
+    {
+      id: "comfort_routine",
+      title: "Make a cosy comfort moment: warm drink, blanket, soft music",
+      type: "activity",
+      categories: ["self-care", "support"],
+      moodTags: ["sad", "stressed"],
+      interests: ["Self-care", "Music", "Relaxation"],
+    },
+    {
+      id: "self_compassion_pause",
+      title: "Self-compassion pause: talk to yourself like a friend",
+      type: "activity",
+      categories: ["support", "reflection"],
+      moodTags: ["sad"],
+      interests: ["Mindfulness", "Wellness", "Reflection"],
+    },
+    {
+      id: "shake_it_out",
+      title: "Shake it out: 5 minutes of brisk movement",
+      type: "activity",
+      categories: ["movement", "calm"],
+      moodTags: ["angry", "stressed"],
+      interests: ["Movement", "Fitness", "Health"],
+    },
+    {
+      id: "unsent_letter",
+      title: "Write an unsent letter to let the anger out",
+      type: "activity",
+      categories: ["journaling", "release"],
+      moodTags: ["angry"],
+      interests: ["Journaling", "Writing", "Reflection"],
     },
   ],
   videos: [
@@ -206,6 +271,69 @@ const CANDIDATES = {
   ],
 };
 
+// What happens when an activity is opened: `link` goes to a page in the app,
+// otherwise `steps` are shown as a short how-to.
+const journalLink = (prompt) => `/journal?prompt=${encodeURIComponent(prompt)}`;
+const ACTIVITY_ACTIONS = {
+  gratitude_journal: { link: "/games/gratitude" },
+  guided_breathing: { link: "/games/breathing" },
+  dance_break: { link: "/music" },
+  plan_something_fun: { link: journalLink("Something I'd love to look forward to, and my plan to make it happen") },
+  self_compassion_pause: { link: journalLink("What I'd say to a good friend feeling the way I feel right now") },
+  unsent_letter: { link: journalLink("An unsent letter: what I really want to say") },
+  creative_break: {
+    steps: [
+      "Grab any paper and a pen, pencil or colours.",
+      "Set a 10-minute timer and doodle, sketch or colour whatever comes to mind.",
+      "There's no right or wrong: focus on the movement, not the result.",
+    ],
+  },
+  nature_walk: {
+    steps: [
+      "Step outside for 10–15 minutes, no destination needed.",
+      "Leave your phone in your pocket and walk at an easy pace.",
+      "Notice five things you can see, four you can hear and three you can feel.",
+    ],
+  },
+  mindful_stretch: {
+    steps: [
+      "Stand or sit comfortably and take three slow breaths.",
+      "Gently roll your neck and shoulders, then reach your arms overhead.",
+      "Fold forward slowly, let your arms hang for a few breaths, then roll back up.",
+      "Move slowly and stop if anything hurts.",
+    ],
+  },
+  share_good_news: {
+    steps: [
+      "Think of someone who'd be happy to hear from you.",
+      "Send them a message or call to share what's going well.",
+      "Ask how they're doing too: good moods are better shared.",
+    ],
+  },
+  reach_out: {
+    steps: [
+      "Pick one person you feel safe with: a friend, family member or mentor.",
+      "Send a simple message, like \"Hey, are you free to talk for a bit?\"",
+      "You don't have to explain everything; just letting someone in can help.",
+      "If you ever feel unsafe, contact a local helpline or emergency number right away.",
+    ],
+  },
+  comfort_routine: {
+    steps: [
+      "Make a warm drink you like: tea, hot chocolate or warm milk.",
+      "Get cosy with a blanket somewhere comfortable.",
+      "Put on some soft music or a comforting show and give yourself 15 minutes.",
+    ],
+  },
+  shake_it_out: {
+    steps: [
+      "Stand up and shake out your hands, arms and legs for 30 seconds.",
+      "Do a few minutes of brisk movement: fast walking, jumping jacks or stairs.",
+      "Finish with three slow, deep breaths and notice how your body feels.",
+    ],
+  },
+};
+
 const MOOD_IMPROVEMENT_KEYWORDS = {
   anxious: ["calm", "mindfulness", "breathing"],
   stressed: ["relaxation", "breathing", "focus"],
@@ -241,15 +369,19 @@ function scoreInterest(matches) {
   return Math.min(1, matches / 3);
 }
 
-function scoreMoodRelevance(candidate, topMoods, trendDirection) {
-  const tags = new Set([...(candidate.moodTags || []), ...(candidate.categories || []), ...(candidate.interests || [])]);
-  const matchingMood = topMoods.filter((mood) => tags.has(mood)).length;
-  const improvementTags = new Set([].concat(...topMoods.map((mood) => MOOD_IMPROVEMENT_KEYWORDS[mood] || [])));
-  const improvementMatch = [...tags].filter((tag) => improvementTags.has(tag)).length;
-  const base = Math.min(1, matchingMood / Math.max(1, topMoods.length));
-  const boost = Math.min(1, improvementMatch / 3);
-  const trendBonus = trendDirection === "declining" ? 0.1 : 0;
-  return Math.min(1, base * 0.6 + boost * 0.4 + trendBonus);
+// The current mood (latest journal entry) dominates: an item tagged for it scores up to 3,
+// well above the other signals (each 0-1), so happy and sad users get clearly different picks.
+// The past week's moods only add a small bonus.
+function scoreMoodRelevance(candidate, currentMood, weeklyMoods, trendDirection) {
+  const moodTags = new Set((candidate.moodTags || []).map((tag) => (tag === "anger" ? "angry" : String(tag).toLowerCase())));
+  const themes = new Set([...(candidate.categories || []), ...(candidate.interests || [])].map((t) => String(t).toLowerCase()));
+
+  const currentMatch = moodTags.has(currentMood) ? 2 : 0;
+  const improvementMatch = (MOOD_IMPROVEMENT_KEYWORDS[currentMood] || []).filter((keyword) => themes.has(keyword)).length;
+  const improvementBonus = Math.min(0.6, improvementMatch * 0.3);
+  const weeklyBonus = weeklyMoods.some((mood) => moodTags.has(mood)) ? 0.3 : 0;
+  const trendBonus = trendDirection === "declining" && currentMatch ? 0.1 : 0;
+  return currentMatch + improvementBonus + weeklyBonus + trendBonus;
 }
 
 function buildGenres(userGenres, itemGenres) {
@@ -393,6 +525,9 @@ exports.buildRecommendations = async function (userId, options = {}) {
     .slice(0, 2)
     .map(([mood]) => mood);
   const trendDirection = moodAnalytics?.trend?.direction || "stable";
+  const ALLOWED_MOODS = ["happy", "sad", "stressed", "anxious", "calm", "angry", "neutral"];
+  const latestMood = String(journalEntries[0]?.mood || "").toLowerCase().trim();
+  const currentMood = ALLOWED_MOODS.includes(latestMood) ? latestMood : topMoodCandidates[0] || "neutral";
 
   const allCandidates = flattenCandidates([
     ...CANDIDATES.games,
@@ -412,10 +547,10 @@ exports.buildRecommendations = async function (userId, options = {}) {
       const universalEngagement = Object.values(engagementMap);
       const relatedEngagements = universalEngagement.filter((record) => {
         const sharedCategory = record.categories
-          ? [...record.categories].some((cat) => candidate.categories.includes(String(cat).toLowerCase()))
+          ? [...record.categories].some((cat) => (candidate.categories || []).includes(String(cat).toLowerCase()))
           : false;
         const sharedMood = record.moodTags
-          ? [...record.moodTags].some((tag) => candidate.moodTags.includes(String(tag).toLowerCase()))
+          ? [...record.moodTags].some((tag) => (candidate.moodTags || []).includes(String(tag).toLowerCase()))
           : false;
         return sharedCategory || sharedMood;
       });
@@ -438,7 +573,7 @@ exports.buildRecommendations = async function (userId, options = {}) {
           ? buildGenres([...favoriteMovies, ...favoriteMusic], candidate.genres)
           : 0;
 
-      const moodRelevance = scoreMoodRelevance(candidate, topMoodCandidates, trendDirection);
+      const moodRelevance = scoreMoodRelevance(candidate, currentMood, topMoodCandidates, trendDirection);
       const recencyScore = scoreRecency(lastEngagedDays);
       const engagementScore = scoreEngagement(engagementCount);
       const interestScore = Math.min(1, scoreInterest(interestMatches + genreMatches));
@@ -446,7 +581,8 @@ exports.buildRecommendations = async function (userId, options = {}) {
       const explanationParts = [];
       if (interestMatches > 0) explanationParts.push(`Matches your interests (${interestMatches})`);
       if (genreMatches > 0) explanationParts.push(`Aligns with your favorite genres (${genreMatches})`);
-      if (moodRelevance > 0) explanationParts.push(`Relevant to your recent mood`) ;
+      if (moodRelevance >= 2) explanationParts.push(`Picked for how you're feeling (${currentMood})`);
+      else if (moodRelevance > 0) explanationParts.push(`Relevant to your recent mood`);
       if (recencyScore > 0.5) explanationParts.push(`You engaged with similar content recently`);
       if (engagementScore > 0.4) explanationParts.push(`Popular based on your recent activity`);
 
@@ -476,7 +612,22 @@ exports.buildRecommendations = async function (userId, options = {}) {
     .sort((a, b) => b.score - a.score);
 
   const topGames = chooseTopCandidates(scored.filter((item) => item.type === "game"), 3, allCandidates);
-  const topActivities = chooseTopCandidates(scored.filter((item) => item.type === "activity"), 3, allCandidates);
+
+  // Prompts and picks chosen by Gemini from what the user wrote in their latest entry
+  // (written in the background after each entry); mood-based scoring fills any gaps.
+  const personalPicks = await getPersonalJournalPrompts(userObjectId, journalEntries);
+  const PICKED_REASON = "Chosen for what you wrote in your latest journal entry.";
+  const preferPicked = (items, pickedIds) => {
+    const byId = new Map(items.map((item) => [String(item.id), item]));
+    const picked = pickedIds.map((id) => byId.get(id)).filter(Boolean).map((item) => ({ ...item, explanation: PICKED_REASON }));
+    const pickedSet = new Set(picked.map((item) => String(item.id)));
+    return [...picked, ...items.filter((item) => !pickedSet.has(String(item.id)))];
+  };
+
+  const scoredActivities = preferPicked(scored.filter((item) => item.type === "activity"), personalPicks.activityIds);
+  const topActivities = chooseTopCandidates(scoredActivities, 3, allCandidates).map(
+    (activity) => ({ ...activity, ...(ACTIVITY_ACTIONS[activity.id] || {}) })
+  );
   let topVideos = chooseTopCandidates(scored.filter((item) => item.type === "video"), 3, allCandidates);
 
   // If video results are sparse or missing valid URLs, prefer the dedicated video recommender
@@ -486,9 +637,9 @@ exports.buildRecommendations = async function (userId, options = {}) {
   const needsBetterVideos = topVideos.length < 3 || !hasDirectVideoUrl;
   if (needsBetterVideos) {
     try {
-      const videoResults = await recommendVideos({ user, journals: journalEntries, moodAnalytics, limit: 3 });
+      const videoResults = await recommendVideos({ user, journals: journalEntries, moodAnalytics, limit: 20 });
       if (Array.isArray(videoResults) && videoResults.length) {
-        topVideos = videoResults.map((v) => ({
+        topVideos = preferPicked(videoResults, personalPicks.videoIds).slice(0, 3).map((v) => ({
           id: v.id,
           title: v.title,
           type: "video",
@@ -507,7 +658,10 @@ exports.buildRecommendations = async function (userId, options = {}) {
   }
   const topMovies = chooseTopCandidates(scored.filter((item) => item.type === "movie"), 3, allCandidates);
   const topMusic = chooseTopCandidates(scored.filter((item) => item.type === "music"), 3, allCandidates);
-  const topJournalPrompts = chooseTopCandidates(scored.filter((item) => item.type === "journalPrompt"), 3, allCandidates);
+  // Personal prompts written from the user's own journal entries; static prompts are the fallback
+  const topJournalPrompts =
+    personalPicks.prompts ||
+    chooseTopCandidates(scored.filter((item) => item.type === "journalPrompt"), 3, allCandidates);
 
   const recommendedItems = [...topGames, ...topActivities, ...topVideos, ...topMovies, ...topMusic, ...topJournalPrompts];
   await saveRecommendationBatch(userObjectId, recommendedItems);
@@ -519,6 +673,7 @@ exports.buildRecommendations = async function (userId, options = {}) {
     movies: topMovies,
     music: topMusic,
     journalPrompts: topJournalPrompts,
+    journalPromptsPending: personalPicks.pending,
   };
 };
 
@@ -532,4 +687,9 @@ exports.getPublicCatalog = function () {
     music: pick(CANDIDATES.music || []),
     journalPrompts: pick(CANDIDATES.journalPrompts),
   };
+};
+
+// Activities the Dashboard can recommend, for choosing picks from a journal entry's content
+exports.getActivityCatalog = function () {
+  return CANDIDATES.activities.map((a) => ({ id: a.id, title: a.title, moodTags: a.moodTags || [] }));
 };

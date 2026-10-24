@@ -8,15 +8,17 @@ const REGION = "IN";
 const CACHE_DAYS = 7;
 const MOVIES_PER_MOOD = 12;
 const REQUEST_TIMEOUT_MS = 10000;
+const DETAILS_CONCURRENCY = 4;
 
-// Watchmode genre names to search for each journal mood
+// Watchmode genre names to search for each journal mood. Kept distinct between moods
+// (especially happy vs sad) so different moods don't get the same popular titles.
 const MOOD_GENRES = {
-  stressed: ["Comedy", "Animation", "Family"],
-  sad: ["Comedy", "Family", "Animation"],
-  anxious: ["Documentary", "Animation", "Family"],
-  happy: ["Adventure", "Romance", "Comedy"],
-  angry: ["Comedy", "Adventure", "Documentary"],
-  calm: ["Documentary", "Drama", "Romance"],
+  happy: ["Adventure", "Romance", "Musical"],
+  sad: ["Family", "Animation", "Fantasy"],
+  stressed: ["Comedy", "Nature", "Food"],
+  anxious: ["Nature", "Documentary", "Travel"],
+  angry: ["Comedy", "Sports", "Documentary"],
+  calm: ["Documentary", "Travel", "Romance"],
   neutral: ["Comedy", "Drama", "Adventure"],
 };
 
@@ -74,40 +76,52 @@ async function fetchMoviesFromWatchmode(mood) {
     limit: String(MOVIES_PER_MOOD),
   });
 
+  // Fetch details a few at a time instead of one by one (much faster on a cold cache)
   const saved = [];
-  for (const title of list.titles || []) {
-    try {
-      const details = await watchmodeGet(`/title/${title.id}/details/`, {
-        append_to_response: "sources",
-        regions: REGION,
-      });
-      const { platforms, watchUrl } = pickStreamingSources(details.sources);
-      const movie = await Movie.findOneAndUpdate(
-        { watchmodeId: details.id },
-        {
-          $set: {
-            title: details.title,
-            genres: details.genre_names || [],
-            description: details.plot_overview || "No description available.",
-            poster: details.posterMedium || details.poster || "",
-            year: details.year,
-            rating: details.user_rating,
-            streamingPlatforms: platforms,
-            watchUrl,
-            trailerUrl: details.trailer || "",
-            trailerThumbnail: getYouTubeThumbnail(details.trailer),
-            source: "watchmode",
-          },
-          $addToSet: { moods: mood },
-        },
-        { upsert: true, new: true }
-      ).lean();
-      saved.push(movie);
-    } catch (err) {
-      console.warn(`Watchmode details failed for title ${title.id}:`, err.message);
+  const queue = [...(list.titles || [])];
+  async function worker() {
+    while (queue.length) {
+      const title = queue.shift();
+      const movie = await fetchAndSaveTitle(title, mood);
+      if (movie) saved.push(movie);
     }
   }
+  await Promise.all(Array.from({ length: DETAILS_CONCURRENCY }, worker));
   return saved;
+}
+
+async function fetchAndSaveTitle(title, mood) {
+  try {
+    const details = await watchmodeGet(`/title/${title.id}/details/`, {
+      append_to_response: "sources",
+      regions: REGION,
+    });
+    const { platforms, watchUrl } = pickStreamingSources(details.sources);
+    const movie = await Movie.findOneAndUpdate(
+      { watchmodeId: details.id },
+      {
+        $set: {
+          title: details.title,
+          genres: details.genre_names || [],
+          description: details.plot_overview || "No description available.",
+          poster: details.posterMedium || details.poster || "",
+          year: details.year,
+          rating: details.user_rating,
+          streamingPlatforms: platforms,
+          watchUrl,
+          trailerUrl: details.trailer || "",
+          trailerThumbnail: getYouTubeThumbnail(details.trailer),
+          source: "watchmode",
+        },
+        $addToSet: { moods: mood },
+      },
+      { upsert: true, new: true }
+    ).lean();
+    return movie;
+  } catch (err) {
+    console.warn(`Watchmode details failed for title ${title.id}:`, err.message);
+    return null;
+  }
 }
 
 // Returns Watchmode movies for a mood, using the stored copy while it is fresh.

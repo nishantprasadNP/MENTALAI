@@ -188,8 +188,12 @@ function calculateVideoScore(video, signals) {
   const stressPreferences = normalizeList(signals.stressPreferences);
   const moodPriorityCategories = MOOD_PRIORITY_CATEGORIES[signals.latestJournalMood] || [];
 
+  // The current (latest journal) mood outweighs everything else, so different moods get different videos
+  if (countMatches(video.moodTags, [signals.latestJournalMood]) > 0) {
+    score += 10;
+  }
   if (countMatches(video.moodTags, [signals.dominantMood]) > 0) {
-    score += 4;
+    score += 2;
   }
 
   score += countMatches(video.categories, moodPriorityCategories) * 2.5;

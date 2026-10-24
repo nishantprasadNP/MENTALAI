@@ -156,6 +156,27 @@ function calculateMovieScore(movie, moodTargets, moodTrend, preferredGenres, int
   };
 }
 
+// Films often have several genres (e.g. Adventure + Animation), so the same popular titles can
+// match several moods. Keep films whose main (first) genre belongs to this mood, so happy and sad
+// get different films. If that leaves too few, add films whose main genre isn't claimed by any
+// other mood (e.g. Action, Science Fiction), never ones that belong to another mood.
+const MIN_MAIN_GENRE_MATCHES = 6;
+function keepMainGenreMatches(movies, mood) {
+  const lower = (genres) => (genres || []).map((g) => g.toLowerCase());
+  const moodGenres = new Set(lower(MOOD_GENRES[mood]));
+  const otherMoodGenres = new Set(
+    Object.entries(MOOD_GENRES)
+      .filter(([other]) => other !== mood)
+      .flatMap(([, genres]) => lower(genres))
+      .filter((genre) => !moodGenres.has(genre))
+  );
+  const mainGenre = (movie) => String(movie.genres?.[0] || "").toLowerCase();
+  const matches = movies.filter((movie) => moodGenres.has(mainGenre(movie)));
+  if (matches.length >= MIN_MAIN_GENRE_MATCHES) return matches;
+  const neutral = movies.filter((movie) => !moodGenres.has(mainGenre(movie)) && !otherMoodGenres.has(mainGenre(movie)));
+  return [...matches, ...neutral];
+}
+
 async function recommendMovies(userData, journals = [], limit = 10) {
   const rawLatestMood = getLatestJournalMood(journals);
   const latestMood = sanitizeMood(rawLatestMood);
@@ -165,7 +186,7 @@ async function recommendMovies(userData, journals = [], limit = 10) {
   const interests = normalizeArray(userData.personalization?.interests || []);
 
   // Watchmode movies for this mood first; the seeded local catalog is the fallback.
-  let candidates = await getMoviesForMood(latestMood);
+  let candidates = keepMainGenreMatches(await getMoviesForMood(latestMood), latestMood);
   if (!candidates.length) {
     candidates = await Movie.find({ source: { $ne: "watchmode" } }).lean();
   }

@@ -14,6 +14,7 @@ const {
   getVideoRecommendations,
   recordWatchedVideo,
 } = require("../controllers/videoRecommendationController");
+const { getMusicRecommendations } = require("../controllers/musicController");
 
 const router = express.Router();
 
@@ -24,6 +25,7 @@ router.get("/history", auth, getRecommendationHistory);
 router.get("/movies", auth, getMovieRecommendations);
 router.post("/movies/click", auth, trackMovieClick);
 router.get("/videos", auth, getVideoRecommendations);
+router.get("/music", auth, getMusicRecommendations);
 router.post("/videos/watched", auth, recordWatchedVideo);
 
 module.exports = router;
