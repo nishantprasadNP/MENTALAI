@@ -1,8 +1,8 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const PRIMARY_MODEL = "gemini-flash-lite-latest";
-const FALLBACK_MODEL = "gemini-flash-latest";
+const PRIMARY_MODEL = "gemini-3.1-flash-lite";
+const FALLBACK_MODEL = "gemini-flash-lite-latest";
 const GEMINI_TIMEOUT_MS = 15000;
 
 const systemPrompt = [

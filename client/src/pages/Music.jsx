@@ -43,7 +43,8 @@ export default function Music() {
   // Only artwork is updated (songs whose cover turned out unsafe are removed), so the list doesn't jump.
   const coverChecks = useRef(0);
   useEffect(() => {
-    if (!data?.coversPending || coverChecks.current >= 3) return;
+    // Cover checks can take ~15-30s on a mood's first visit, so keep checking for ~45s
+    if (!data?.coversPending || coverChecks.current >= 9) return;
     const timer = setTimeout(async () => {
       coverChecks.current += 1;
       try {

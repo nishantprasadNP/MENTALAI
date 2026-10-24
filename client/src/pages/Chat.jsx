@@ -42,19 +42,20 @@ export default function Chat() {
   const typeMessage = useCallback((text, onDone) => {
     setStage("typing");
     setTypingText("");
+    // Quick reveal: the whole reply appears in well under a second, whatever its length
     let i = 0;
-    const speed = Math.max(8, Math.min(25, Math.floor(3000 / text.length)));
+    const step = Math.max(2, Math.ceil(text.length / 50));
 
     function tick() {
-      if (i <= text.length) {
+      if (i < text.length) {
+        i = Math.min(text.length, i + step);
         setTypingText(text.slice(0, i));
-        i++;
-        typingRef.current = setTimeout(tick, speed);
+        typingRef.current = setTimeout(tick, 12);
       } else {
         onDone();
       }
     }
-    typingRef.current = setTimeout(tick, speed);
+    typingRef.current = setTimeout(tick, 12);
   }, []);
 
   useEffect(() => {
@@ -79,12 +80,9 @@ export default function Chat() {
       const payload = newMessages.filter((_, i) => i > 0).map(({ role, content }) => ({ role, content }));
       const { data } = await axios.post("/api/chat", { messages: payload });
 
-      const { reply, thinkingTime } = data;
+      const { reply } = data;
 
-      // Wait for the server-suggested thinking time
-      await sleep(thinkingTime || 1500);
-
-      // Then typewriter
+      // Show the reply as soon as it arrives (the request itself is the "thinking" time)
       typeMessage(reply, () => {
         setMessages((prev) => [
           ...prev,
@@ -95,7 +93,6 @@ export default function Chat() {
         inputRef.current?.focus();
       });
     } catch {
-      await sleep(1000);
       const errMsg = "I'm sorry, something went wrong on my end. Please try again.";
       typeMessage(errMsg, () => {
         setMessages((prev) => [
@@ -293,8 +290,4 @@ function formatTime(date) {
   if (!date) return "";
   const d = new Date(date);
   return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
-}
-
-function sleep(ms) {
-  return new Promise((res) => setTimeout(res, ms));
 }
