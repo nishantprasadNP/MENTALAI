@@ -1,4 +1,5 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -26,7 +27,14 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/recommendations", recommendationRoutes);
 app.use("/api/engagement", engagementRoutes);
 
-app.get("/", (req, res) => res.json({ message: "Mental AI API is running" }));
+app.get("/api/health", (req, res) => res.json({ message: "Mental AI API is running" }));
+
+// In production the built React app is served by this same server (single deploy, no CORS)
+if (process.env.NODE_ENV === "production") {
+  const clientDist = path.join(__dirname, "..", "client", "dist");
+  app.use(express.static(clientDist));
+  app.get(/^\/(?!api\/).*/, (req, res) => res.sendFile(path.join(clientDist, "index.html")));
+}
 
 // Connect to MongoDB and start server
 mongoose

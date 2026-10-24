@@ -1,0 +1,25 @@
+# Render Blueprint: one web service that runs the Express API and serves the built React app.
+# Secrets marked "sync: false" are entered in the Render dashboard, never committed.
+services:
+  - type: web
+    name: mental-ai
+    runtime: node
+    plan: free
+    buildCommand: npm install --prefix server && npm install --prefix client --include=dev && npm run build --prefix client
+    startCommand: node server/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "20"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGO_URI
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: WATCHMODE_API_KEY
+        sync: false
+      - key: YOUTUBE_API_KEY
+        sync: false

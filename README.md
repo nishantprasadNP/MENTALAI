@@ -123,10 +123,17 @@ Every exchange is saved to `ChatHistory`.
 
 **Moods** are normalized to: `happy`, `sad`, `stressed`, `anxious`, `calm`, `angry`, `neutral`.
 
+## Deployment (Render + MongoDB Atlas)
+
+In production one Express server runs the API and serves the built React app (`NODE_ENV=production`), so the whole app has a single URL. `render.yaml` describes the service.
+
+1. **Database:** create a free M0 cluster on [MongoDB Atlas](https://cloud.mongodb.com), add a database user, allow network access from `0.0.0.0/0` (Render's free plan has no fixed IP), and copy the connection string.
+2. **Movies:** seed the Atlas database once: `cd server && MONGO_URI="<atlas uri>" npm run seed:movies`.
+3. **Render:** New → Blueprint → pick this repository. Render reads `render.yaml`; fill in `MONGO_URI`, `GEMINI_API_KEY`, `WATCHMODE_API_KEY` (and optionally `YOUTUBE_API_KEY`). `JWT_SECRET` is generated for you.
+4. Every push to `main` redeploys automatically. On the free plan the service sleeps when idle, so the first request afterwards takes ~30–50 seconds.
+
 ## Production notes
 
-- Build the client (`npm run build`) and host `client/dist` on any static host or CDN; run the server as an API only.
-- Set `CLIENT_ORIGIN` to your real frontend URL.
 - External calls (Gemini, Watchmode, YouTube) use in-memory caching only; add rate limiting and a shared cache (e.g. Redis) before scaling to several instances.
 
 ## Disclaimer
