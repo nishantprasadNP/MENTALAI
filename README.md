@@ -36,7 +36,7 @@ The Vite dev server proxies `/api` to `http://localhost:5001` (see `client/vite.
 | `PORT` | no | API port (default `5001`; macOS uses 5000 for AirPlay) |
 | `CLIENT_ORIGIN` | no | Allowed CORS origin (default `http://localhost:5173`) |
 | `GEMINI_API_KEY` | no | Enables AI chat replies and movie summaries. Without it, chat uses rule-based replies |
-| `TMDB_API_KEY` | no | Movie metadata and posters from TMDB. Without it, seeded local movies are used |
+| `WATCHMODE_API_KEY` | no | Movies and Indian streaming links from Watchmode (free plan, results cached 7 days). Without it, seeded local movies are used |
 | `YOUTUBE_API_KEY` | no | Lets `/api/recommendations/resolve` turn a title into a YouTube link (`GOOGLE_API_KEY` also works) |
 
 Never commit `.env`.
@@ -70,9 +70,10 @@ server/
   models/                 User, Journal, ChatHistory, GameHistory, Movie, MovieClick,
                           RecommendationHistory, VideoWatch
   services/geminiService.js  Gemini client, system prompt, model fallback
+  services/watchmodeService.js  Watchmode movies + streaming sources, cached in MongoDB
   utils/
     RecommendationService.js        main scoring engine
-    movieRecommendationService.js   TMDB + local movie recommendations
+    movieRecommendationService.js   mood-based movie recommendations (Watchmode + local)
     videoRecommendationService.js   wellness videos from wellnessVideos.json
     chatRules.js                    rule-based chat replies and fallbacks
     memoryService.js                builds chat context from journals, mood and history
@@ -126,7 +127,7 @@ Every exchange is saved to `ChatHistory`.
 
 - Build the client (`npm run build`) and host `client/dist` on any static host or CDN; run the server as an API only.
 - Set `CLIENT_ORIGIN` to your real frontend URL.
-- External calls (Gemini, TMDB, YouTube) use in-memory caching only; add rate limiting and a shared cache (e.g. Redis) before scaling to several instances.
+- External calls (Gemini, Watchmode, YouTube) use in-memory caching only; add rate limiting and a shared cache (e.g. Redis) before scaling to several instances.
 
 ## Disclaimer
 

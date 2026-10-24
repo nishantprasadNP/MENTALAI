@@ -1,10 +1,5 @@
-const fetch = globalThis.fetch;
 const Movie = require("../models/Movie");
-const { generateMentalAIResponse } = require("../services/geminiService");
-
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
-const TMDB_BASE_URL = "https://api.themoviedb.org/3";
-const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
+const { MOOD_GENRES, getMoviesForMood } = require("../services/watchmodeService");
 
 const MOOD_SEARCH_TERMS = {
   stressed: ["comedy", "feel-good", "uplifting"],
@@ -26,27 +21,6 @@ const MOOD_SCORE_VALUES = {
   sad: 1,
 };
 
-const TMDB_GENRE_MAP = {
-  28: "Action",
-  12: "Adventure",
-  16: "Animation",
-  35: "Comedy",
-  80: "Crime",
-  99: "Documentary",
-  18: "Drama",
-  10751: "Family",
-  14: "Fantasy",
-  36: "History",
-  27: "Horror",
-  10402: "Music",
-  9648: "Mystery",
-  10749: "Romance",
-  878: "Science Fiction",
-  10770: "TV Movie",
-  53: "Thriller",
-  10752: "War",
-  37: "Western",
-};
 
 const DEFAULT_FALLBACK_MOVIES = [
   {
@@ -54,7 +28,6 @@ const DEFAULT_FALLBACK_MOVIES = [
     title: "Feel-good family adventure",
     overview: "A warm, uplifting story designed to help you feel more hopeful and supported.",
     rating: 7.2,
-    tmdbUrl: "https://www.themoviedb.org/",
     poster: null,
     recommendationReason: "A comforting fallback pick to support your current mood.",
   },
@@ -63,7 +36,6 @@ const DEFAULT_FALLBACK_MOVIES = [
     title: "Uplifting comedy",
     overview: "A lighthearted movie recommendation to help lift your spirits.",
     rating: 7.0,
-    tmdbUrl: "https://www.themoviedb.org/",
     poster: null,
     recommendationReason: "A gentle selection meant to brighten your day.",
   },
@@ -72,7 +44,6 @@ const DEFAULT_FALLBACK_MOVIES = [
     title: "Calming documentary",
     overview: "A thoughtful, relaxing film to support emotional balance.",
     rating: 7.1,
-    tmdbUrl: "https://www.themoviedb.org/",
     poster: null,
     recommendationReason: "A fallback choice for grounding and calm.",
   },
@@ -124,10 +95,6 @@ function buildMovieSearchQueries(mood) {
   return MOOD_SEARCH_TERMS[mood] || MOOD_SEARCH_TERMS.neutral;
 }
 
-function mapGenreIdsToNames(genreIds = []) {
-  return genreIds.map((id) => TMDB_GENRE_MAP[id]).filter(Boolean);
-}
-
 function buildReason({ latestMood, moodTrend, matchedGenres, interestMatches }) {
   const parts = [`Your latest journal mood is ${latestMood}.`];
   if (matchedGenres.length) {
@@ -158,62 +125,13 @@ function capitalize(word) {
   return word[0].toUpperCase() + word.slice(1);
 }
 
-function getTMDBMovieUrl(id) {
-  return `https://www.themoviedb.org/movie/${id}`;
-}
-
-function formatTMDBPoster(path) {
-  return path ? `${TMDB_IMAGE_BASE}${path}` : null;
-}
-
-async function fetchTMDBMovies(queries, limit = 30) {
-  if (!TMDB_API_KEY) {
-    console.warn("TMDB API key is not configured; falling back to local movie catalog.");
-    return [];
-  }
-  if (typeof fetch !== "function") {
-    console.warn("Global fetch is unavailable; cannot query TMDB from this runtime.");
-    return [];
-  }
-
-  const resultMap = new Map();
-  for (const query of queries) {
-    const url = `${TMDB_BASE_URL}/search/movie?api_key=${encodeURIComponent(TMDB_API_KEY)}&language=en-US&query=${encodeURIComponent(query)}&include_adult=false&page=1`;
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        const text = await response.text();
-        console.warn(`TMDB search failed for query '${query}' with status ${response.status}: ${text}`);
-        continue;
-      }
-      const data = await response.json();
-      (data.results || []).forEach((movie) => {
-        if (!movie.id || resultMap.has(movie.id)) return;
-        resultMap.set(movie.id, {
-          id: movie.id,
-          title: movie.title,
-          overview: movie.overview || "",
-          rating: movie.vote_average || 0,
-          poster: formatTMDBPoster(movie.poster_path),
-          tmdbUrl: getTMDBMovieUrl(movie.id),
-          genres: mapGenreIdsToNames(movie.genre_ids),
-          raw: movie,
-        });
-      });
-    } catch (err) {
-      console.error("TMDB fetch error:", err.message);
-    }
-    if (resultMap.size >= limit * 2) break;
-  }
-
-  return Array.from(resultMap.values());
-}
-
-function calculateMovieScore(movie, moodTargets, moodTrend, preferredGenres, interests) {
+function calculateMovieScore(movie, moodTargets, moodTrend, preferredGenres, interests, latestMood) {
   const favoriteGenres = normalizeArray(preferredGenres);
   const interestTerms = normalizeArray(interests);
 
-  const titleOverview = normalizeText(`${movie.title} ${movie.overview} ${movie.genres?.join(" ") || ""}`);
+  const titleOverview = normalizeText(
+    `${movie.title} ${movie.overview} ${movie.genres?.join(" ") || ""} ${movie.moods?.join(" ") || ""}`
+  );
   const moodMatchCount = moodTargets.reduce((count, term) => (titleOverview.includes(normalizeText(term)) ? count + 1 : count), 0);
   const matchedGenres = favoriteGenres.filter((genre) => movie.genres.map((g) => normalizeText(g)).includes(normalizeText(genre)));
   const interestMatches = interestTerms.filter((term) => titleOverview.includes(term)).length;
@@ -228,7 +146,7 @@ function calculateMovieScore(movie, moodTargets, moodTrend, preferredGenres, int
     ...movie,
     score: weightedScore,
     recommendationReason: buildReason({
-      latestMood: moodTargets[0] || "neutral",
+      latestMood,
       moodTrend: moodTrend.direction,
       matchedGenres,
       interestMatches,
@@ -242,65 +160,40 @@ async function recommendMovies(userData, journals = [], limit = 10) {
   const rawLatestMood = getLatestJournalMood(journals);
   const latestMood = sanitizeMood(rawLatestMood);
   const moodTrend = calculateMoodTrend(journals);
-  const moodTargets = buildMovieSearchQueries(latestMood);
+  const moodTargets = [...buildMovieSearchQueries(latestMood), ...(MOOD_GENRES[latestMood] || [])];
   const preferredGenres = normalizeArray(userData.personalization?.favoriteGenres?.movies || []);
   const interests = normalizeArray(userData.personalization?.interests || []);
 
-  let movies = await fetchTMDBMovies(moodTargets, limit * 3);
-
-  if (!movies.length) {
-    const localMovies = await Movie.find({}).lean();
-    movies = localMovies.map((movie) => ({
-      id: movie._id,
-      title: movie.title,
-      overview: movie.description || "",
-      rating: movie.rating || 0,
-      poster: movie.poster || null,
-      tmdbUrl: movie.tmdbUrl || "https://www.themoviedb.org/",
-      genres: movie.genres || [],
-    }));
+  // Watchmode movies for this mood first; the seeded local catalog is the fallback.
+  let candidates = await getMoviesForMood(latestMood);
+  if (!candidates.length) {
+    candidates = await Movie.find({ source: { $ne: "watchmode" } }).lean();
   }
 
-  const recommendedBase = movies
-    .map((movie) => calculateMovieScore(movie, moodTargets, moodTrend, preferredGenres, interests))
+  const movies = candidates.map((movie) => ({
+    id: String(movie._id),
+    title: movie.title,
+    overview: movie.description || "",
+    rating: movie.rating ?? null,
+    year: movie.year ?? null,
+    poster: movie.poster || null,
+    genres: movie.genres || [],
+    moods: movie.moods || [],
+    platforms: movie.streamingPlatforms || [],
+    watchUrl: movie.watchUrl || "",
+    trailerUrl: movie.trailerUrl || "",
+    trailerThumbnail: movie.trailerThumbnail || "",
+  }));
+
+  const recommended = movies
+    .map((movie) => calculateMovieScore(movie, moodTargets, moodTrend, preferredGenres, interests, latestMood))
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
 
-  const recommended = await Promise.all(
-    recommendedBase.map(async (movie) => {
-      let explanation = movie.recommendationReason;
-      if (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== "your_gemini_api_key_here") {
-        try {
-          explanation = await generateMentalAIResponse(
-            `Movie: ${movie.title}\nOverview: ${movie.overview || "No overview available."}\nGenres: ${movie.genres?.join(", ") || "N/A"}\nUser recent mood: ${latestMood}\nMood trend: ${moodTrend.direction}\nInterests: ${interests.join(", ") || "none"}\n\nIn 2-3 sentences, explain why this movie was selected and how it supports the user's current emotional state and wellness goals.`,
-            {
-              selectedMovie: movie,
-              dominantMood: latestMood,
-              moodTrend: moodTrend.direction,
-              interests,
-            }
-          );
-        } catch (err) {
-          console.error("Movie explanation generation error:", err.message);
-        }
-      }
-
-      return {
-        id: movie.id,
-        title: movie.title,
-        poster: movie.poster,
-        overview: movie.overview,
-        rating: movie.rating,
-        tmdbUrl: movie.tmdbUrl,
-        explanation: explanation || movie.recommendationReason,
-        score: Number(movie.score.toFixed(2)),
-      };
-    })
-  );
   if (!recommended.length) {
     console.warn("Movie recommender returned no scored items; using fallback movies.");
     const fallback = DEFAULT_FALLBACK_MOVIES.slice(0, limit);
-    const summaryFallback = `Based on your profile and recent activity we could not find TMDB matches; showing fallback picks to support wellbeing.`;
+    const summaryFallback = "We couldn't load movies right now, so here are a few gentle picks to support your wellbeing.";
     return { summary: summaryFallback, movies: fallback };
   }
 
@@ -309,16 +202,20 @@ async function recommendMovies(userData, journals = [], limit = 10) {
   const readableInterests = interests.length ? interests.map((i) => capitalize(i)).join(", ") : "None specified";
   const summary = `Based on your latest journal mood (${capitalize(latestMood)}), your selected genres (${readableGenres}), and your interests (${readableInterests}), we selected movies that best match your current emotional state.`;
 
-  // Remove explanation-heavy text from each movie object returned to frontend (UI will show a single summary)
+  // Per-movie explanations are not sent; the UI shows the single summary above
   const moviesForUi = recommended.map((m) => ({
     id: m.id,
     title: m.title,
     poster: m.poster,
     overview: m.overview,
     rating: m.rating,
-    tmdbUrl: m.tmdbUrl,
+    year: m.year,
     genres: m.genres,
-    score: m.score,
+    platforms: m.platforms,
+    watchUrl: m.watchUrl,
+    trailerUrl: m.trailerUrl,
+    trailerThumbnail: m.trailerThumbnail,
+    score: Number(m.score.toFixed(2)),
   }));
 
   return { summary, movies: moviesForUi };

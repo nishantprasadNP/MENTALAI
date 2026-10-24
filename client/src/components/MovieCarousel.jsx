@@ -6,6 +6,7 @@ export default function MovieCarousel({ limit = 8 }) {
   const [movies, setMovies] = useState([]);
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(true);
+  const [brokenImages, setBrokenImages] = useState(() => new Set());
 
   useEffect(() => {
     let mounted = true;
@@ -34,12 +35,11 @@ export default function MovieCarousel({ limit = 8 }) {
     axios.post("/api/recommendations/movies/click", {
       movieId: movie.id,
       movieTitle: movie.title,
-      platform: movie.streamingPlatforms?.[0] || "Unknown",
+      platform: movie.platforms?.[0] || "Unknown",
     });
 
-    const searchQuery = encodeURIComponent(`${movie.title}`.trim());
-    const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
-    window.open(searchUrl, "_blank");
+    const searchQuery = encodeURIComponent(`${movie.title} ${movie.year || ""} watch online`.trim());
+    window.open(movie.watchUrl || `https://www.google.com/search?q=${searchQuery}`, "_blank", "noopener");
   }
 
   if (loading) {
@@ -64,45 +64,69 @@ export default function MovieCarousel({ limit = 8 }) {
 
       <div className="overflow-x-auto pb-2">
         <div className="flex gap-4 min-w-max">
-          {movies.map((movie) => (
+          {movies.map((movie) => {
+            // Poster first; if it can't load (e.g. TMDB blocked), use the trailer thumbnail
+            const image = [movie.poster, movie.trailerThumbnail].find((url) => url && !brokenImages.has(url));
+            const isTrailerImage = image && image === movie.trailerThumbnail;
+            return (
             <div key={movie.id} className="snap-start w-56 shrink-0 rounded-3xl bg-white border border-gray-200 shadow-sm overflow-hidden">
-              <div className="relative h-64 bg-slate-100">
-                {movie.poster ? (
-                  <img src={movie.poster} alt={movie.title} className="h-full w-full object-cover" />
+              <div className="relative h-64 bg-gray-900 overflow-hidden">
+                {image ? (
+                  <img
+                    key={image}
+                    src={image}
+                    alt={movie.title}
+                    // hqdefault thumbnails are letterboxed; scaling crops the black bars
+                    className={`h-full w-full object-cover ${isTrailerImage ? "scale-[1.35]" : ""}`}
+                    onError={() => setBrokenImages((prev) => new Set(prev).add(image))}
+                  />
                 ) : (
                   <div className="h-full w-full bg-gradient-to-br from-brand-100 via-peach-100 to-lavender-200 flex flex-col items-center justify-center gap-3 p-4 text-center">
                     <span className="text-4xl" aria-hidden="true">🎬</span>
                     <span className="font-display text-lg font-semibold text-gray-800 leading-snug">{movie.title}</span>
                   </div>
                 )}
+                {movie.trailerUrl && (
+                  <a
+                    href={movie.trailerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-black/60 hover:bg-black/75 backdrop-blur px-3 py-1.5 text-xs font-semibold text-white transition-colors"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+                    Trailer
+                  </a>
+                )}
               </div>
               <div className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-base font-semibold text-gray-900">{movie.title}</h3>
+                <div className="mb-2">
+                  <h3 className="text-base font-semibold text-gray-900 leading-snug">{movie.title}</h3>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {[movie.year, movie.rating ? `★ ${Number(movie.rating).toFixed(1)}` : null].filter(Boolean).join(" · ")}
+                  </p>
                 </div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex flex-wrap gap-2">
-                    {movie.genres?.slice(0, 2).map((genre) => (
-                      <span key={genre} className="text-xs text-gray-600 bg-gray-100 rounded-full px-2 py-1">
-                        {genre}
-                      </span>
-                    ))}
-                  </div>
-                  <span className="text-sm text-gray-500">{movie.rating ?? "—"}</span>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {movie.genres?.slice(0, 2).map((genre) => (
+                    <span key={genre} className="text-xs text-gray-600 bg-gray-100 rounded-full px-2 py-1">
+                      {genre}
+                    </span>
+                  ))}
                 </div>
 
-                <div className="flex items-center justify-between gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleMovieClick(movie)}
-                    className="inline-flex items-center justify-center rounded-full bg-brand-600 text-white px-4 py-2 text-sm font-medium hover:bg-brand-700 transition"
-                  >
-                    Watch / View
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => handleMovieClick(movie)}
+                  className="w-full inline-flex items-center justify-center rounded-full bg-brand-600 text-white px-4 py-2 text-sm font-medium hover:bg-brand-700 transition truncate"
+                >
+                  {movie.watchUrl && movie.platforms?.[0] ? `Watch on ${movie.platforms[0]}` : "Find where to watch"}
+                </button>
+                {movie.platforms?.length > 1 && (
+                  <p className="text-[11px] text-gray-400 mt-2 truncate">Also on {movie.platforms.slice(1, 3).join(", ")}</p>
+                )}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
